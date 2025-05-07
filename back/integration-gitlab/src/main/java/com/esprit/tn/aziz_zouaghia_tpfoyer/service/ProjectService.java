@@ -1,4 +1,5 @@
 package com.esprit.tn.aziz_zouaghia_tpfoyer.service;
+
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Professor;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Project;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Student;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProjectService {
@@ -16,8 +18,8 @@ public class ProjectService {
     private final GitLabService gitLabService;
 
     public ProjectService(ProjectRepository projectRepository, 
-                        UserRepository userRepository,
-                        GitLabService gitLabService) {
+                         UserRepository userRepository,
+                         GitLabService gitLabService) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.gitLabService = gitLabService;
@@ -27,18 +29,23 @@ public class ProjectService {
         Professor professor = (Professor) userRepository.findById(professorId)
             .orElseThrow(() -> new RuntimeException("Professor not found"));
         
-        ResponseEntity<String> response = gitLabService.createGitLabProject(project);
+        // Call GitLabService.createProject with name and description
+        ResponseEntity<Map<String, Object>> response = gitLabService.createProject(
+            project.getTitre(),
+            project.getDescription()
+        );
         
+        // Parse GitLab project ID from response
         String gitlabProjectId = parseGitLabProjectId(response.getBody());
         project.setGitlabProjectId(gitlabProjectId);
         
         return projectRepository.save(project);
     }
     
-    private String parseGitLabProjectId(String responseBody) {
-        // Implementation to parse GitLab project ID from response
-        return responseBody.contains("\"id\":") ? 
-               responseBody.split("\"id\":")[1].split(",")[0] : "unknown";
+    private String parseGitLabProjectId(Map<String, Object> responseBody) {
+        // Extract the project ID from the GitLab response
+        Object id = responseBody.get("id");
+        return id != null ? id.toString() : "unknown";
     }
     
     public Project assignStudentsToProject(Long projectId, List<Long> studentIds) {

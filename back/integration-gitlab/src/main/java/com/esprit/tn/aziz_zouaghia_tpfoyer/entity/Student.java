@@ -1,4 +1,5 @@
 package com.esprit.tn.aziz_zouaghia_tpfoyer.entity;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,7 @@ import java.util.Set;
 public class Student extends User {
     private String matricule;
     private String niveau;
-    
+
     @ManyToMany(mappedBy = "students")
     private Set<Project> projects = new HashSet<>();
 }

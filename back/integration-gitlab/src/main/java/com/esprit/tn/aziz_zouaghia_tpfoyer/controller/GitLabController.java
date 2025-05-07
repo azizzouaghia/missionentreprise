@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gitlab")
@@ -13,13 +14,21 @@ import java.util.List;
 public class GitLabController {
     private final GitLabService gitLabService;
 
-    @PostMapping("/users")
-    public ResponseEntity<String> createGitLabUser(@RequestBody User user) {
-        return gitLabService.createGitLabUser(user);
+    @GetMapping("/projects")
+    public ResponseEntity<List<Map<String, Object>>> getAllProjects() {
+        return gitLabService.fetchAllProjects();
+    }
+
+    @PostMapping("/projects")
+    public ResponseEntity<Map<String, Object>> createProject(
+            @RequestParam String name,
+            @RequestParam String description) {
+        return gitLabService.createProject(name, description);
     }
 
     @GetMapping("/projects/{projectId}/commits")
-    public ResponseEntity<List<Object>> getProjectCommits(@PathVariable String projectId) {
-        return gitLabService.getProjectCommits(projectId);
+    public ResponseEntity<List<Map<String, Object>>> getProjectCommits(
+            @PathVariable String projectId) {
+        return gitLabService.fetchProjectCommits(projectId);
     }
 }
