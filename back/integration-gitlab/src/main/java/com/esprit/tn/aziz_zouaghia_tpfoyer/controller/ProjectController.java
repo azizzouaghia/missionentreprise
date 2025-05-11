@@ -18,6 +18,15 @@ public class ProjectController {
     public ResponseEntity<Project> createProject(
             @RequestBody Project project,
             @RequestParam Long professorId) {
+        // No JWT check - just pass through
         return ResponseEntity.ok(projectService.createProject(project, professorId));
+    }
+
+    @PostMapping("/{projectId}/assign")
+    public ResponseEntity<Project> assignStudents(
+            @PathVariable Long projectId,
+            @RequestBody List<Long> studentIds) {
+        // No JWT check - just pass through
+        return ResponseEntity.ok(projectService.assignStudentsToProject(projectId, studentIds));
     }
 }

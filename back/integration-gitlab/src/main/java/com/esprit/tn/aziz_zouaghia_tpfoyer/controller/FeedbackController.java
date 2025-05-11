@@ -1,25 +1,73 @@
 package com.esprit.tn.aziz_zouaghia_tpfoyer.controller;
+
+import com.esprit.tn.aziz_zouaghia_tpfoyer.dto.FeedbackRequest;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.dto.FeedbackResponse;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Feedback;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Project;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Role;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.User;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.FeedbackRepository;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.ProjectRepository;
+import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/feedback")
 @RequiredArgsConstructor
 public class FeedbackController {
     private final FeedbackRepository feedbackRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<Feedback> createFeedback(@RequestBody Feedback feedback) {
-        return ResponseEntity.ok(feedbackRepository.save(feedback));
+    public ResponseEntity<FeedbackResponse> createFeedback(@RequestBody FeedbackRequest request) {
+        Project project = projectRepository.findById(request.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+
+        User professor = userRepository.findById(request.getProfessorId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getProfessorId()));
+
+        if (!professor.getRole().equals(Role.PROF)) {
+            throw new RuntimeException("User with id " + request.getProfessorId() + " is not a professor");
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setCommentaire(request.getCommentaire());
+        feedback.setNote(request.getNote());
+        feedback.setDate(LocalDate.now());
+        feedback.setProject(project);
+        feedback.setProfessor(professor);
+
+        Feedback savedFeedback = feedbackRepository.save(feedback);
+
+        // Using builder pattern
+        FeedbackResponse response = FeedbackResponse.builder()
+                .id(savedFeedback.getId())
+                .commentaire(savedFeedback.getCommentaire())
+                .note(savedFeedback.getNote())
+                .date(savedFeedback.getDate())
+                .projectId(savedFeedback.getProject().getId())
+                .professorId(savedFeedback.getProfessor().getId())
+                .professorName(savedFeedback.getProfessor().getUsername())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/project/{projectId}")
-    public ResponseEntity<List<Feedback>> getProjectFeedback(@PathVariable Long projectId) {
-        return ResponseEntity.ok(feedbackRepository.findByProjectId(projectId));
+    // Alternative method without builder pattern
+    private FeedbackResponse mapToResponse(Feedback feedback) {
+        FeedbackResponse response = new FeedbackResponse();
+        response.setId(feedback.getId());
+        response.setCommentaire(feedback.getCommentaire());
+        response.setNote(feedback.getNote());
+        response.setDate(feedback.getDate());
+        response.setProjectId(feedback.getProject().getId());
+        response.setProfessorId(feedback.getProfessor().getId());
+        response.setProfessorName(feedback.getProfessor().getUsername());
+        return response;
     }
 }

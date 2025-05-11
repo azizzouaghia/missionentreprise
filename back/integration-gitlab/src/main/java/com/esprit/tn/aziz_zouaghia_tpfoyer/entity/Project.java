@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Data
 @Table(name = "project")
@@ -29,6 +31,7 @@ public class Project {
     private Set<Student> students = new HashSet<>();
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnoreProperties("project") // Add this
     private Set<Feedback> feedbacks = new HashSet<>();
 
     private String gitlabProjectId;

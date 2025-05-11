@@ -5,6 +5,7 @@ import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Project;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Student;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.ProjectRepository;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.UserRepository;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,40 +19,42 @@ public class ProjectService {
     private final GitLabService gitLabService;
 
     public ProjectService(ProjectRepository projectRepository, 
-                         UserRepository userRepository,
-                         GitLabService gitLabService) {
+                        UserRepository userRepository,
+                        GitLabService gitLabService) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.gitLabService = gitLabService;
     }
 
     public Project createProject(Project project, Long professorId) {
-        Professor professor = (Professor) userRepository.findById(professorId)
-            .orElseThrow(() -> new RuntimeException("Professor not found"));
-        
-        // Call GitLabService.createProject with name and description
-        ResponseEntity<Map<String, Object>> response = gitLabService.createProject(
-            project.getTitre(),
-            project.getDescription()
-        );
-        
-        // Parse GitLab project ID from response
-        String gitlabProjectId = parseGitLabProjectId(response.getBody());
-        project.setGitlabProjectId(gitlabProjectId);
-        
-        return projectRepository.save(project);
-    }
-    
-    private String parseGitLabProjectId(Map<String, Object> responseBody) {
-        // Extract the project ID from the GitLab response
-        Object id = responseBody.get("id");
-        return id != null ? id.toString() : "unknown";
+        try {
+            ResponseEntity<Map<String, Object>> gitlabResponse = gitLabService.createProject(
+                project.getTitre(),
+                project.getDescription()
+            );
+            
+            if (gitlabResponse.getStatusCode().is2xxSuccessful() && gitlabResponse.getBody() != null) {
+                String gitlabProjectId = gitlabResponse.getBody().get("id").toString();
+                project.setGitlabProjectId(gitlabProjectId);
+                
+                // Set professor if needed
+                if (professorId != null) {
+                    Professor professor = (Professor) userRepository.findById(professorId)
+                        .orElseThrow(() -> new RuntimeException("Professor not found"));
+                    // Add professor relationship if your model supports it
+                }
+                
+                return projectRepository.save(project);
+            } else {
+                throw new RuntimeException("Failed to create GitLab project: " + gitlabResponse.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating project: " + e.getMessage(), e);
+        }
     }
     
     public Project assignStudentsToProject(Long projectId, List<Long> studentIds) {
-        Project project = projectRepository.findById(projectId)
-            .orElseThrow(() -> new RuntimeException("Project not found"));
-        
+        Project project = projectRepository.findById(projectId).orElseThrow();
         List<Student> students = userRepository.findAllById(studentIds).stream()
             .filter(user -> user instanceof Student)
             .map(user -> (Student) user)

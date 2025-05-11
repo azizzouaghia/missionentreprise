@@ -1,5 +1,6 @@
 package com.esprit.tn.aziz_zouaghia_tpfoyer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -32,6 +35,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    // Add this for feedbacks given by professor
+    @OneToMany(mappedBy = "professor")
+    @JsonIgnore
+    private Set<Feedback> givenFeedbacks = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(() -> role.name());
@@ -39,7 +47,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Use email as username for authentication
+        return email;
     }
 
     @Override

@@ -17,17 +17,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.esprit.tn.aziz_zouaghia_tpfoyer.security.JwtAuthenticationFilter;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final UserDetailsService userDetailsService;
+    
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,7 +33,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/projects/**").hasAnyRole("PROF", "ADMIN")
+                .requestMatchers("/api/projects/**").permitAll()
+                .requestMatchers("/api/gitlab/**").permitAll()
+                .requestMatchers("/api/feedback/**").permitAll() 
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -43,9 +43,10 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    
+        
         return http.build();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
