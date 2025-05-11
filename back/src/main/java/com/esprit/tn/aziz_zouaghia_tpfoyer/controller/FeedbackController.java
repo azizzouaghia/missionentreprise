@@ -44,7 +44,6 @@ public class FeedbackController {
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
 
-        // Using builder pattern
         FeedbackResponse response = FeedbackResponse.builder()
                 .id(savedFeedback.getId())
                 .commentaire(savedFeedback.getCommentaire())
@@ -56,18 +55,5 @@ public class FeedbackController {
                 .build();
 
         return ResponseEntity.ok(response);
-    }
-
-    // Alternative method without builder pattern
-    private FeedbackResponse mapToResponse(Feedback feedback) {
-        FeedbackResponse response = new FeedbackResponse();
-        response.setId(feedback.getId());
-        response.setCommentaire(feedback.getCommentaire());
-        response.setNote(feedback.getNote());
-        response.setDate(feedback.getDate());
-        response.setProjectId(feedback.getProject().getId());
-        response.setProfessorId(feedback.getProfessor().getId());
-        response.setProfessorName(feedback.getProfessor().getUsername());
-        return response;
     }
 }

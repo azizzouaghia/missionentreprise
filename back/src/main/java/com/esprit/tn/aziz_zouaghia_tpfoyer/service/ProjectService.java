@@ -5,12 +5,15 @@ import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Project;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.entity.Student;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.ProjectRepository;
 import com.esprit.tn.aziz_zouaghia_tpfoyer.repository.UserRepository;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
@@ -37,11 +40,9 @@ public class ProjectService {
                 String gitlabProjectId = gitlabResponse.getBody().get("id").toString();
                 project.setGitlabProjectId(gitlabProjectId);
                 
-                // Set professor if needed
                 if (professorId != null) {
                     Professor professor = (Professor) userRepository.findById(professorId)
                         .orElseThrow(() -> new RuntimeException("Professor not found"));
-                    // Add professor relationship if your model supports it
                 }
                 
                 return projectRepository.save(project);
@@ -53,14 +54,23 @@ public class ProjectService {
         }
     }
     
+    @Transactional
     public Project assignStudentsToProject(Long projectId, List<Long> studentIds) {
-        Project project = projectRepository.findById(projectId).orElseThrow();
-        List<Student> students = userRepository.findAllById(studentIds).stream()
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
+        
+        Set<Student> students = studentIds.stream()
+            .map(id -> userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id)))
             .filter(user -> user instanceof Student)
             .map(user -> (Student) user)
-            .toList();
+            .collect(Collectors.toSet());
         
-        project.getStudents().addAll(students);
+        // Create a new HashSet to avoid ConcurrentModificationException
+        Set<Student> updatedStudents = new HashSet<>(project.getStudents());
+        updatedStudents.addAll(students);
+        project.setStudents(updatedStudents);
+        
         return projectRepository.save(project);
     }
 }

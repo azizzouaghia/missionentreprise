@@ -3,11 +3,13 @@ package com.esprit.tn.aziz_zouaghia_tpfoyer.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"project", "professor"})
 @Table(name = "feedback")
 public class Feedback {
     @Id
@@ -18,12 +20,12 @@ public class Feedback {
     private Integer note;
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     @JsonIgnore
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
     @JsonIgnore
     private User professor;

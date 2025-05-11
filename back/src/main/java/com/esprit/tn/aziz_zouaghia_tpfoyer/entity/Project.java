@@ -2,6 +2,7 @@ package com.esprit.tn.aziz_zouaghia_tpfoyer.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"students", "feedbacks"})
 @Table(name = "project")
 public class Project {
     @Id
@@ -23,16 +25,28 @@ public class Project {
     private LocalDate dateDebut;
     private LocalDate dateFin;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "etudiant_projet",
         joinColumns = @JoinColumn(name = "project_id"),
         inverseJoinColumns = @JoinColumn(name = "etudiant_id"))
+    @JsonIgnoreProperties("projects")
     private Set<Student> students = new HashSet<>();
 
-    @OneToMany(mappedBy = "project")
-    @JsonIgnoreProperties("project") // Add this
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("project")
     private Set<Feedback> feedbacks = new HashSet<>();
 
     private String gitlabProjectId;
+
+    // Helper methods for bidirectional relationship
+    public void addStudent(Student student) {
+        this.students.add(student);
+        student.getProjects().add(this);
+    }
+
+    public void removeStudent(Student student) {
+        this.students.remove(student);
+        student.getProjects().remove(this);
+    }
 }
