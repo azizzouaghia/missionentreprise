@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.esprit.tn</groupId>
-    <artifactId>aziz-zouaghia-tpfoyer</artifactId>
+    <artifactId>GitProjectApplication</artifactId>
     <version>0.1.0</version>
-    <name>aziz-zouaghia-tpfoyer</name>
+    <name>GitProjectApplication</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
