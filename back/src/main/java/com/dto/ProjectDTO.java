@@ -1,5 +1,6 @@
 package com.dto;
 
+import com.entity.Phase;
 import com.entity.Project;
 import com.entity.Student;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ProjectDTO {
     private String gitlabProjectId;
     private Long professorId;
     private Set<Long> studentIds;
+    private Set<Long> phaseIds;
 
     public static ProjectDTO fromEntity(Project project) {
         ProjectDTO dto = new ProjectDTO();
@@ -30,6 +32,9 @@ public class ProjectDTO {
         dto.setProfessorId(project.getProfessor() != null ? project.getProfessor().getId() : null);
         dto.setStudentIds(project.getStudents().stream()
                 .map(Student::getId)
+                .collect(Collectors.toSet()));
+        dto.setPhaseIds(project.getPhases().stream()
+                .map(Phase::getId)
                 .collect(Collectors.toSet()));
         return dto;
     }

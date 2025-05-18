@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = {"students", "feedbacks", "professor"})
+@EqualsAndHashCode(exclude = {"students", "feedbacks", "professor", "phases"})
 @Table(name = "project")
 public class Project {
     @Id
@@ -36,6 +36,10 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("project")
     private Set<Feedback> feedbacks = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("project")
+    private Set<Phase> phases = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")

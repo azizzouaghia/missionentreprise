@@ -1,4 +1,5 @@
 package com.controller;
+
 import com.entity.User;
 import com.service.GitLabService;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,11 @@ public class GitLabController {
     public ResponseEntity<List<Map<String, Object>>> getProjectCommits(
             @PathVariable String projectId) {
         return gitLabService.fetchProjectCommits(projectId);
+    }
+
+    @GetMapping("/projects/{projectId}/branches")
+    public ResponseEntity<List<Map<String, Object>>> getProjectBranches(
+            @PathVariable String projectId) {
+        return gitLabService.fetchProjectBranches(projectId);
     }
 }

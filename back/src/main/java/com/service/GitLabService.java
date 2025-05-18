@@ -49,9 +49,9 @@ public class GitLabService {
         );
         
         if (commitsResponse.getBody() != null) {
-            return commitsResponse.getBody().size();  // Directly return the size as Integer
+            return commitsResponse.getBody().size();
         }
-        return 0;  // Return primitive int which will be auto-boxed to Integer
+        return 0;
     }
 
     public ResponseEntity<Map<String, Object>> createProject(String name, String description) {
@@ -85,6 +85,18 @@ public class GitLabService {
         
         return restTemplate.exchange(
             gitLabApiUrl + "/projects/" + projectId + "/repository/commits",
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+        );
+    }
+
+    public ResponseEntity<List<Map<String, Object>>> fetchProjectBranches(String projectId) {
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(
+            gitLabApiUrl + "/projects/" + projectId + "/repository/branches",
             HttpMethod.GET,
             entity,
             new ParameterizedTypeReference<List<Map<String, Object>>>() {}
