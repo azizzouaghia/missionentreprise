@@ -31,7 +31,6 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         logger.info("Registering user with email: {}", request.getEmail());
 
-        // Check for existing email
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             logger.error("Email already exists: {}", request.getEmail());
             throw new IllegalArgumentException("Email already exists");

@@ -38,4 +38,18 @@ public class GitLabController {
             @PathVariable String projectId) {
         return gitLabService.fetchProjectBranches(projectId);
     }
+
+    @GetMapping("/projects/{projectId}/merge-requests")
+    public ResponseEntity<List<Map<String, Object>>> getProjectMergeRequests(
+            @PathVariable String projectId) {
+        return gitLabService.fetchProjectMergeRequests(projectId);
+    }
+
+    @PostMapping("/projects/{projectId}/branches")
+    public ResponseEntity<Map<String, Object>> createBranch(
+            @PathVariable String projectId,
+            @RequestParam String branchName,
+            @RequestParam String ref) {
+        return gitLabService.createBranch(projectId, branchName, ref);
+    }
 }

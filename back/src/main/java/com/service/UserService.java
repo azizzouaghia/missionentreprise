@@ -1,13 +1,16 @@
-package com.service;  // Fixed package declaration
+package com.service;
 
 import com.dto.UpdateUserRequest;
 import com.dto.UserResponse;
 import com.entity.Professor;
 import com.entity.Role;
 import com.entity.Student;
-import com.entity.User;import com.repository.UserRepository;
+import com.entity.User;
+import com.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +19,40 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public UserResponse createUser(UpdateUserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists: " + request.getEmail());
+        }
+
+        User user;
+        Role role = request.getRole();
+        if (role == Role.ETUDIANT) {
+            Student student = new Student();
+            student.setMatricule(request.getMatricule());
+            student.setNiveau(request.getNiveau());
+            user = student;
+        } else if (role == Role.PROF) {
+            Professor professor = new Professor();
+            professor.setSpecialite(request.getSpecialite());
+            professor.setBureau(request.getBureau());
+            user = professor;
+        } else if (role == Role.ADMIN) {
+            user = new User();
+        } else {
+            throw new RuntimeException("Invalid role: " + role);
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode("defaultPassword"));
+        user.setRole(role);
+
+        User savedUser = userRepository.save(user);
+        return convertToResponse(savedUser);
+    }
 
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
@@ -29,10 +66,22 @@ public class UserService {
         return convertToResponse(user);
     }
 
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return convertToResponse(user);
+    }
+
+    public List<UserResponse> getUsersByRole(Role role) {
+        return userRepository.findByRole(role).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
     public List<UserResponse> searchUsers(String query) {
         List<User> users = userRepository.searchUsers(query);
         return users.stream()
-                .map(user -> convertToResponse(user)) // Changed from method reference to lambda
+                .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -40,6 +89,7 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
     public UserResponse updateUser(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -60,21 +110,28 @@ public class UserService {
         return convertToResponse(savedUser);
     }
 
-private UserResponse convertToResponse(User user) {
-    UserResponse.UserResponseBuilder builder = UserResponse.builder()
-            .id(user.getId())
-            .username(user.getActualUsername()) // Make sure this method exists
-            .email(user.getEmail())
-            .role(user.getRole());
-
-    if (user instanceof Professor prof) {
-        builder.specialite(prof.getSpecialite())
-              .bureau(prof.getBureau());
-    } else if (user instanceof Student student) {
-        builder.matricule(student.getMatricule())
-              .niveau(student.getNiveau());
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.delete(user);
     }
 
-    return builder.build();
-}
+    private UserResponse convertToResponse(User user) {
+        UserResponse.UserResponseBuilder builder = UserResponse.builder()
+                .id(user.getId())
+                .username(user.getActualUsername())
+                .email(user.getEmail())
+                .role(user.getRole());
+
+        if (user instanceof Professor prof) {
+            builder.specialite(prof.getSpecialite())
+                   .bureau(prof.getBureau());
+        } else if (user instanceof Student student) {
+            builder.matricule(student.getMatricule())
+                   .niveau(student.getNiveau());
+        }
+
+        return builder.build();
+    }
 }

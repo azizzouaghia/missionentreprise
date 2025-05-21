@@ -2,58 +2,52 @@ package com.controller;
 
 import com.dto.FeedbackRequest;
 import com.dto.FeedbackResponse;
-import com.entity.Feedback;
-import com.entity.Project;
-import com.entity.Role;
-import com.entity.User;
-import com.repository.FeedbackRepository;
-import com.repository.ProjectRepository;
-import com.repository.UserRepository;
+import com.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/feedback")
 @RequiredArgsConstructor
 public class FeedbackController {
-    private final FeedbackRepository feedbackRepository;
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final FeedbackService feedbackService;
 
     @PostMapping
     public ResponseEntity<FeedbackResponse> createFeedback(@RequestBody FeedbackRequest request) {
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+        return ResponseEntity.ok(feedbackService.createFeedback(request));
+    }
 
-        User professor = userRepository.findById(request.getProfessorId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getProfessorId()));
+    @GetMapping
+    public ResponseEntity<List<FeedbackResponse>> getAllFeedbacks() {
+        return ResponseEntity.ok(feedbackService.getAllFeedbacks());
+    }
 
-        if (!professor.getRole().equals(Role.PROF)) {
-            throw new RuntimeException("User with id " + request.getProfessorId() + " is not a professor");
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable Long id) {
+        return ResponseEntity.ok(feedbackService.getFeedbackById(id));
+    }
 
-        Feedback feedback = new Feedback();
-        feedback.setCommentaire(request.getCommentaire());
-        feedback.setNote(request.getNote());
-        feedback.setDate(LocalDate.now());
-        feedback.setProject(project);
-        feedback.setProfessor(professor);
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<FeedbackResponse>> getFeedbackByProject(@PathVariable Long projectId) {
+        return ResponseEntity.ok(feedbackService.getByProject(projectId));
+    }
 
-        Feedback savedFeedback = feedbackRepository.save(feedback);
+    @GetMapping("/professor/{professorId}")
+    public ResponseEntity<List<FeedbackResponse>> getFeedbackByProfessor(@PathVariable Long professorId) {
+        return ResponseEntity.ok(feedbackService.getByProfessor(professorId));
+    }
 
-        FeedbackResponse response = FeedbackResponse.builder()
-                .id(savedFeedback.getId())
-                .commentaire(savedFeedback.getCommentaire())
-                .note(savedFeedback.getNote())
-                .date(savedFeedback.getDate())
-                .projectId(savedFeedback.getProject().getId())
-                .professorId(savedFeedback.getProfessor().getId())
-                .professorName(savedFeedback.getProfessor().getUsername())
-                .build();
+    @PutMapping("/{id}")
+    public ResponseEntity<FeedbackResponse> updateFeedback(@PathVariable Long id, @RequestBody FeedbackRequest request) {
+        return ResponseEntity.ok(feedbackService.updateFeedback(id, request));
+    }
 
-        return ResponseEntity.ok(response);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFeedback(@PathVariable Long id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.noContent().build();
     }
 }

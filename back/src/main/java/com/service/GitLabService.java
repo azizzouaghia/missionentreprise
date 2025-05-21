@@ -103,6 +103,42 @@ public class GitLabService {
         );
     }
 
+    public ResponseEntity<List<Map<String, Object>>> fetchProjectMergeRequests(String projectId) {
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        return restTemplate.exchange(
+            gitLabApiUrl + "/projects/" + projectId + "/merge_requests",
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+        );
+    }
+
+    public ResponseEntity<Map<String, Object>> createBranch(String projectId, String branchName, String ref) {
+        HttpHeaders headers = createHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        Map<String, String> body = new HashMap<>();
+        body.put("branch", branchName);
+        body.put("ref", ref);
+
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+
+        try {
+            return restTemplate.exchange(
+                gitLabApiUrl + "/projects/" + projectId + "/repository/branches",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("GitLab API error: " + e.getResponseBodyAsString(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to call GitLab API", e);
+        }
+    }
+
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("PRIVATE-TOKEN", privateToken);

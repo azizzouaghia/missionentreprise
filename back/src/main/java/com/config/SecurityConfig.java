@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/stats/**").permitAll()
                 .requestMatchers("/api/professors/**").permitAll()
                 .requestMatchers("/api/phases/**").permitAll()
+                .requestMatchers("/api/students/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
