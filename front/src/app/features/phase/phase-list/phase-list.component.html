@@ -1,0 +1,31 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Phases</h2>
+  <button mat-raised-button color="primary" class="mb-4" (click)="navigateToCreate()"  routerLink="/phases/create">Create Phase</button>
+  <mat-table [dataSource]="phases">
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+      <mat-cell *matCellDef="let phase">{{ phase.id }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+      <mat-cell *matCellDef="let phase">{{ phase.name }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+      <mat-cell *matCellDef="let phase">{{ phase.status }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="projectId">
+      <mat-header-cell *matHeaderCellDef>Project ID</mat-header-cell>
+      <mat-cell *matCellDef="let phase">{{ phase.projectId }}</mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+      <mat-cell *matCellDef="let phase">
+        <button mat-button color="primary" (click)="editPhase(phase.id)">Edit</button>
+        <button mat-button color="warn" (click)="deletePhase(phase.id)">Delete</button>
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>

@@ -1,0 +1,23 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Email</mat-label>
+      <input matInput formControlName="email" type="email" class="text-gray-900" />
+      <mat-error *ngIf="loginForm.get('email')?.hasError('required')" class="text-red-600 text-sm">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="loginForm.get('email')?.hasError('email')" class="text-red-600 text-sm">
+        Invalid email
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Password</mat-label>
+      <input matInput formControlName="password" type="password" class="text-gray-900" />
+      <mat-error *ngIf="loginForm.get('password')?.hasError('required')" class="text-red-600 text-sm">
+        Password is required
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="loginForm.invalid">Login</button>
+  </form>
+</div>

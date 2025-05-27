@@ -1,0 +1,20 @@
+<div class="card max-w-md mx-auto mt-8" *ngIf="stats">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">Project Statistics</h2>
+  <div class="space-y-4">
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Total Professors:</span> {{ stats.totalProfessors }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Total Students:</span> {{ stats.totalStudents }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Total Admins:</span> {{ stats.totalAdmins }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Total Projects:</span> {{ stats.totalProjects }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Active Projects:</span> {{ stats.activeProjects }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Completed Projects:</span> {{ stats.completedProjects }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Project Completion Rate:</span> {{ stats.projectCompletionRate }}%</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Total Phases:</span> {{ stats.totalPhases }}</p>
+    <p *ngFor="let item of stats.phasesByStatus | keyvalue" class="text-gray-900">
+      <span class="font-medium text-gray-700">{{ item.key }} Phases:</span> {{ item.value }}
+    </p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Average Feedback Score:</span> {{ stats.averageFeedbackScore }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Average Commits Per Project:</span> {{ stats.averageCommitsPerProject }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Students Assigned:</span> {{ stats.studentsAssigned }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Professors With Projects:</span> {{ stats.professorsWithProjects }}</p>
+  </div>
+</div>

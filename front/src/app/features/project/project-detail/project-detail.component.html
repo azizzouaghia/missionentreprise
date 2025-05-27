@@ -1,0 +1,53 @@
+<div class="max-w-6xl mx-auto px-6 py-8" *ngIf="project">
+  <div class="card">
+    <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ project.titre }}</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">Project Details</h3>
+        <div class="space-y-4">
+          <p><span class="font-medium text-gray-700">Description:</span> {{ project.description }}</p>
+          <p><span class="font-medium text-gray-700">Start Date:</span> {{ project.dateDebut }}</p>
+          <p><span class="font-medium text-gray-700">End Date:</span> {{ project.dateFin || 'N/A' }}</p>
+          <p><span class="font-medium text-gray-700">GitLab Project ID:</span> {{ project.gitlabProjectId || 'N/A' }}</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">Students</h3>
+        <div class="space-y-2">
+          <div *ngFor="let student of students" class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+            <span class="text-gray-900">{{ student.username }}</span>
+            <button class="btn-secondary" (click)="removeStudent(student.id)">Remove</button>
+          </div>
+        </div>
+        <div class="mt-6">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label class="text-gray-700">Assign Student</mat-label>
+            <mat-select [(ngModel)]="selectedStudentId" class="text-gray-900">
+              <mat-option *ngFor="let student of availableStudents" [value]="student.id">
+                {{ student.username }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button class="btn-primary mt-4" (click)="assignStudent()" [disabled]="!selectedStudentId">Assign</button>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Phases</h3>
+      <div class="space-y-2">
+        <div *ngFor="let phase of phases" class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
+          <span class="text-gray-900">{{ phase.name }}</span>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded-full capitalize"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': phase.status === 'COMPLETED',
+                  'bg-blue-100 text-blue-800': phase.status === 'IN_PROGRESS',
+                  'bg-red-100 text-red-800': phase.status === 'PLANNED',
+                  'bg-yellow-100 text-yellow-800': phase.status === 'ON_HOLD' || phase.status === 'CANCELLED'
+                }">
+            {{ phase.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

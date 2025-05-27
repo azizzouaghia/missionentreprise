@@ -1,0 +1,64 @@
+<div class="max-w-6xl mx-auto px-6 py-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-8">System Statistics</h2>
+  
+  <!-- Error Message -->
+  <div *ngIf="chartError" class="card bg-red-50 border-red-200 mb-6">
+    <p class="text-red-600">{{ chartError }}</p>
+  </div>
+
+  <!-- Fallback Text Display if Charts Fail -->
+  <div *ngIf="stats && chartError" class="card mb-6">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Statistics (Text Fallback)</h3>
+    <div class="space-y-4">
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Professors:</span> {{ stats.totalProfessors }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Students:</span> {{ stats.totalStudents }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Admins:</span> {{ stats.totalAdmins }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Projects:</span> {{ stats.totalProjects }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Active Projects:</span> {{ stats.activeProjects }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Completed Projects:</span> {{ stats.completedProjects }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Project Completion Rate:</span> {{ stats.projectCompletionRate }}%</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Phases:</span> {{ stats.totalPhases }}</p>
+      <p *ngFor="let item of stats.phasesByStatus | keyvalue" class="text-gray-900">
+        <span class="font-medium text-gray-700">{{ item.key }} Phases:</span> {{ item.value }}
+      </p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Average Feedback Score:</span> {{ stats.averageFeedbackScore }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Average Commits per Project:</span> {{ stats.averageCommitsPerProject }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Students Assigned:</span> {{ stats.studentsAssigned }}</p>
+      <p class="text-gray-900"><span class="font-medium text-gray-700">Professors with Projects:</span> {{ stats.professorsWithProjects }}</p>
+    </div>
+  </div>
+
+  <!-- Charts Display -->
+  <div *ngIf="stats && !chartError" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- User Types Bar Chart -->
+    <div class="card">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">User Distribution</h3>
+      <canvas id="user-timeline" aria-label="Bar chart showing distribution of professors, students, and admins"></canvas>
+    </div>
+    <!-- Phases Pie Chart -->
+    <div class="card">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Phase Status</h3>
+      <canvas id="phase-timeline" aria-label="Pie chart showing distribution of phase statuses"></canvas>
+    </div>
+    <!-- Projects Doughnut Chart -->
+    <div class="card">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Project Status</h3>
+      <canvas id="project-timeline" aria-label="Doughnut chart showing project statuses"></canvas>
+    </div>
+    <!-- Metrics Line Chart -->
+    <div class="card lg:col-span-2">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Metrics</h3>
+      <canvas id="metrics-timeline" aria-label="Line chart showing average feedback score and commits per project"></canvas>
+    </div>
+    <!-- Simple Stats Card -->
+    <div class="card">
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Additional Metrics</h3>
+      <div class="space-y-4">
+        <p class="text-gray-900"><span class="font-medium text-gray-700">Total Phases:</span> {{ stats.totalPhases }}</p>
+        <p class="text-gray-900"><span class="font-medium text-gray-700">Students Assigned:</span> {{ stats.studentsAssigned }}</p>
+        <p class="text-gray-900"><span class="font-medium text-gray-700">Professors with Projects:</span> {{ stats.professorsWithProjects }}</p>
+        <p class="text-gray-900"><span class="font-medium text-gray-700">Project Completion Rate:</span> {{ stats.projectCompletionRate }}%</p>
+      </div>
+    </div>
+  </div>
+</div>

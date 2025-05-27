@@ -1,0 +1,12 @@
+<div class="card max-w-md mx-auto mt-8" *ngIf="user">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">User Profile</h2>
+  <div class="space-y-4">
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Username:</span> {{ user.username }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Email:</span> {{ user.email }}</p>
+    <p class="text-gray-900"><span class="font-medium text-gray-700">Role:</span> {{ user.role }}</p>
+    <p class="text-gray-900" *ngIf="user.matricule"><span class="font-medium text-gray-700">Matricule:</span> {{ user.matricule }}</p>
+    <p class="text-gray-900" *ngIf="user.niveau"><span class="font-medium text-gray-700">Niveau:</span> {{ user.niveau }}</p>
+    <p class="text-gray-900" *ngIf="user.specialite"><span class="font-medium text-gray-700">Specialite:</span> {{ user.specialite }}</p>
+    <p class="text-gray-900" *ngIf="user.bureau"><span class="font-medium text-gray-700">Bureau:</span> {{ user.bureau }}</p>
+  </div>
+</div>

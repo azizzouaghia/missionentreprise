@@ -1,0 +1,39 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ studentId ? 'Edit' : 'Create' }} Student</h2>
+  <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Username</mat-label>
+      <input matInput formControlName="username" class="text-gray-900">
+      <mat-error *ngIf="studentForm.get('username')?.hasError('required')" class="text-red-600 text-sm">
+        Username is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Email</mat-label>
+      <input matInput formControlName="email" type="email" class="text-gray-900">
+      <mat-error *ngIf="studentForm.get('email')?.hasError('required')" class="text-red-600 text-sm">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="studentForm.get('email')?.hasError('email')" class="text-red-600 text-sm">
+        Invalid email
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Matricule</mat-label>
+      <input matInput formControlName="matricule" class="text-gray-900">
+      <mat-error *ngIf="studentForm.get('matricule')?.hasError('required')" class="text-red-600 text-sm">
+        Matricule is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Level</mat-label>
+      <input matInput formControlName="niveau" class="text-gray-900">
+      <mat-error *ngIf="studentForm.get('niveau')?.hasError('required')" class="text-red-600 text-sm">
+        Level is required
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="studentForm.invalid">
+      {{ studentId ? 'Update' : 'Create' }}
+    </button>
+  </form>
+</div>

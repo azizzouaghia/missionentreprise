@@ -1,0 +1,20 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">Create GitLab Branch</h2>
+  <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Branch Name</mat-label>
+      <input matInput formControlName="branchName" class="text-gray-900">
+      <mat-error *ngIf="branchForm.get('branchName')?.hasError('required')" class="text-red-600 text-sm">
+        Branch Name is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Reference Branch</mat-label>
+      <input matInput formControlName="ref" value="main" class="text-gray-900">
+      <mat-error *ngIf="branchForm.get('ref')?.hasError('required')" class="text-red-600 text-sm">
+        Reference is required
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="branchForm.invalid">Create Branch</button>
+  </form>
+</div>

@@ -1,0 +1,36 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ projectId ? 'Edit' : 'Create' }} Project</h2>
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Title</mat-label>
+      <input matInput formControlName="titre" class="text-gray-900">
+      <mat-error *ngIf="projectForm.get('titre')?.hasError('required')" class="text-red-600 text-sm">
+        Title is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Description</mat-label>
+      <textarea matInput formControlName="description" class="text-gray-900"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Start Date</mat-label>
+      <input matInput formControlName="dateDebut" type="date" class="text-gray-900">
+      <mat-error *ngIf="projectForm.get('dateDebut')?.hasError('required')" class="text-red-600 text-sm">
+        Start Date is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">End Date</mat-label>
+      <input matInput formControlName="dateFin" type="date" class="text-gray-900">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Professor</mat-label>
+      <mat-select formControlName="professorId" class="text-gray-900">
+        <mat-option *ngFor="let prof of professors" [value]="prof.id">{{ prof.username }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="projectForm.invalid">
+      {{ projectId ? 'Update' : 'Create' }}
+    </button>
+  </form>
+</div>

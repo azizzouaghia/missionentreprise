@@ -1,0 +1,49 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ phaseId ? 'Edit' : 'Create' }} Phase</h2>
+  <form [formGroup]="phaseForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Name</mat-label>
+      <input matInput formControlName="name" class="text-gray-900">
+      <mat-error *ngIf="phaseForm.get('name')?.hasError('required')" class="text-red-600 text-sm">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Description</mat-label>
+      <textarea matInput formControlName="description" class="text-gray-900"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Start Date</mat-label>
+      <input matInput formControlName="dateDebut" type="date" class="text-gray-900">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">End Date</mat-label>
+      <input matInput formControlName="dateFin" type="date" class="text-gray-900">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Status</mat-label>
+      <mat-select formControlName="status" class="text-gray-900">
+        <mat-option value="PLANNED">Planned</mat-option>
+        <mat-option value="IN_PROGRESS">In Progress</mat-option>
+        <mat-option value="COMPLETED">Completed</mat-option>
+        <mat-option value="ON_HOLD">On Hold</mat-option>
+        <mat-option value="CANCELLED">Cancelled</mat-option>
+      </mat-select>
+      <mat-error *ngIf="phaseForm.get('status')?.hasError('required')" class="text-red-600 text-sm">
+        Status is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Project</mat-label>
+      <mat-select formControlName="projectId" class="text-gray-900">
+        <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="phaseForm.get('projectId')?.hasError('required')" class="text-red-600 text-sm">
+        Project is required
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="phaseForm.invalid">
+      {{ phaseId ? 'Update' : 'Create' }}
+    </button>
+  </form>
+</div>

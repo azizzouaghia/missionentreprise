@@ -1,0 +1,43 @@
+<div class="max-w-6xl mx-auto px-6 py-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-8">Professors</h2>
+  <div class="card">
+    <table mat-table [dataSource]="professors" class="w-full divide-y divide-gray-200">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ID</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm text-gray-900">{{ professor.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Username</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm text-gray-900">{{ professor.username }}</td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Email</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm text-gray-900">{{ professor.email }}</td>
+      </ng-container>
+      <ng-container matColumnDef="specialite">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Specialty</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm text-gray-600">{{ professor.specialite }}</td>
+      </ng-container>
+      <ng-container matColumnDef="bureau">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Office</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm text-gray-900">{{ professor.bureau }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
+        <td mat-cell *matCellDef="let professor" class="px-6 py-4 text-sm">
+          <button mat-button class="text-red-600 hover:text-red-700" (click)="viewProjects(professor.id)">View Projects</button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-all duration-200"></tr>
+    </table>
+  </div>
+  <div *ngIf="selectedProfessorId" class="mt-8 card">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Projects for Professor ID: {{ selectedProfessorId }}</h3>
+    <div class="space-y-2">
+      <p *ngFor="let project of projects" class="p-2 hover:bg-gray-50 rounded-lg transition-all duration-200 text-gray-900">
+        {{ project.titre }}
+      </p>
+    </div>
+  </div>
+</div>

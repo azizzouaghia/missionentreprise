@@ -1,0 +1,43 @@
+<div class="card max-w-md mx-auto mt-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ feedbackId ? 'Edit' : 'Create' }} Feedback</h2>
+  <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Comment</mat-label>
+      <textarea matInput formControlName="commentaire" class="text-gray-900"></textarea>
+      <mat-error *ngIf="feedbackForm.get('commentaire')?.hasError('required')" class="text-red-600 text-sm">
+        Comment is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Score (1-5)</mat-label>
+      <input matInput formControlName="note" type="number" min="1" max="5" class="text-gray-900">
+      <mat-error *ngIf="feedbackForm.get('note')?.hasError('required')" class="text-red-600 text-sm">
+        Score is required
+      </mat-error>
+      <mat-error *ngIf="feedbackForm.get('note')?.hasError('min') || feedbackForm.get('note')?.hasError('max')" class="text-red-600 text-sm">
+        Score must be between 1 and 5
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Project</mat-label>
+      <mat-select formControlName="projectId" class="text-gray-900">
+        <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="feedbackForm.get('projectId')?.hasError('required')" class="text-red-600 text-sm">
+        Project is required
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label class="text-gray-700">Professor</mat-label>
+      <mat-select formControlName="professorId" class="text-gray-900">
+        <mat-option *ngFor="let prof of professors" [value]="prof.id">{{ prof.username }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="feedbackForm.get('professorId')?.hasError('required')" class="text-red-600 text-sm">
+        Professor is required
+      </mat-error>
+    </mat-form-field>
+    <button type="submit" class="btn-primary" [disabled]="feedbackForm.invalid">
+      {{ feedbackId ? 'Update' : 'Create' }}
+    </button>
+  </form>
+</div>
