@@ -12,7 +12,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -30,35 +37,47 @@ export class LoginComponent {
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log('Login successful', response);
-          localStorage.setItem('token', response.token);
-          const role = this.authService.getUserRoleFromToken(response.token);
-          console.log('User role from token:', role);
-          this.authService.setCurrentUserRole(role);
-          switch (role) {
-            case 'ADMIN':
-              this.router.navigate(['/users']);
-              break;
-            case 'PROF':
-              this.router.navigate(['/professors']);
-              break;
-            case 'ETUDIANT':
-              this.router.navigate(['/students']);
-              break;
-            default:
-              this.snackBar.open('Invalid role', 'Close', { duration: 3000 });
-              localStorage.removeItem('token');
-          }
-        },
-        error: (err) => {
-          console.error('Login failed', err);
-          this.snackBar.open('Login failed. Please check your credentials.', 'Close', { duration: 3000 });
-        }
-      });
+  onSubmit(): void {
+    if (!this.loginForm.valid) {
+      return;
     }
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: ({ token }) => {
+        console.log('Login successful', token);
+        // 1) Stockage du JWT
+        localStorage.setItem('token', token);
+
+        // 2) Décodage et propagation du rôle
+        const role = this.authService.getUserRoleFromToken(token);
+        console.log('User role from token:', role);
+        this.authService.setCurrentUserRole(role);
+
+        // 3) Redirection selon rôle
+        switch (role) {
+          case 'ADMIN':
+            this.router.navigate(['/users']);
+            break;
+          case 'PROF':
+            this.router.navigate(['/professors']);
+            break;
+          case 'ETUDIANT':
+            this.router.navigate(['/students']);
+            break;
+          default:
+            this.snackBar.open('Rôle invalide', 'Fermer', { duration: 3000 });
+            localStorage.removeItem('token');
+            break;
+        }
+      },
+      error: err => {
+        console.error('Login failed', err);
+        this.snackBar.open(
+          'Échec de la connexion. Vérifiez vos identifiants.',
+          'Fermer',
+          { duration: 3000 }
+        );
+      }
+    });
   }
 }

@@ -24,22 +24,22 @@ export class AuthService {
     return this.http.get<User>(`${this.apiUrl}/me`);
   }
 
-getUserRoleFromToken(token: string): string | null {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return Array.isArray(payload.roles) ? payload.roles[0] : null;
-  } catch (e) {
-    console.error('Invalid token', e);
-    return null;
+ getUserRoleFromToken(token: string): string | null {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const roles: string[] = payload.roles || [];
+      return roles.length > 0 ? roles[0] : null;
+    } catch {
+      return null;
+    }
   }
-}
 
 
-  setCurrentUserRole(role: string | null) {
+  setCurrentUserRole(role: string|null) {
     this.currentUserRole.next(role);
   }
 
-  getCurrentUserRole(): Observable<string | null> {
+  getCurrentUserRole(): Observable<string|null> {
     return this.currentUserRole.asObservable();
   }
 
