@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FeedbackService } from '../../../services/feedback.service';
 import { Feedback } from '../../../models/feedback';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-feedback-list',
   standalone: true,
-  imports: [MatTableModule, MatButtonModule],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    RouterModule
+  ],
   templateUrl: './feedback-list.component.html',
 })
 export class FeedbackListComponent implements OnInit {

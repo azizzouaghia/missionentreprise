@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../../services/project.service';
 import { Project } from '../../../models/project';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [MatTableModule, MatButtonModule],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    RouterModule
+  ],
   templateUrl: './project-list.component.html',
 })
 export class ProjectListComponent implements OnInit {
