@@ -8,8 +8,7 @@ import { Stats } from '../models/stats';
   providedIn: 'root'
 })
 export class ProjectService {
-  private apiUrl = 'http://localhost:8089/api/projects';
-
+private apiUrl = 'http://localhost:8089/api/projects';
   constructor(private http: HttpClient) { }
 
   getAllProjects(): Observable<Project[]> {
@@ -51,4 +50,13 @@ export class ProjectService {
   getProjectStats(id: number): Observable<Stats> {
     return this.http.get<Stats>(`${this.apiUrl}/${id}/stats`);
   }
+
+  
+
+getProjectsByProfessor(professorId: number): Observable<Project[]> {
+  return this.http.get<Project[]>(`${this.apiUrl}/professor/${professorId}`); 
+}
+
+
+  
 }

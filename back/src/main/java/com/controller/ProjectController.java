@@ -105,4 +105,13 @@ public class ProjectController {
     public ResponseEntity<Map<String, Object>> getProjectStats(@PathVariable Long id) {
         return ResponseEntity.ok(projectService.getProjectStats(id));
     }
+
+    @GetMapping("/professor/{professorId}")
+    public ResponseEntity<List<ProjectDTO>> getProjectsByProfessor(
+            @PathVariable Long professorId) {
+        List<ProjectDTO> projects = projectService.getProjectsByProfessor(professorId).stream()
+                .map(ProjectDTO::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(projects);
+    }
 }

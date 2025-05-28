@@ -1,37 +1,41 @@
 <div class="max-w-6xl mx-auto px-6 py-8">
   <div class="flex justify-between items-center mb-8">
     <h2 class="text-3xl font-bold text-gray-900">Projects</h2>
-    <button class="btn-primary" routerLink="/projects/create">Create Project</button>
+    <button *ngIf="role === 'ADMIN' || role === 'PROF'" class="btn-primary" (click)="navigateToCreate()">
+      Create Project
+    </button>
   </div>
   <div class="card">
     <table mat-table [dataSource]="projects" class="w-full divide-y divide-gray-200">
       <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ID</th>
-        <td mat-cell *matCellDef="let project" class="px-6 py-4 text-sm text-gray-900">{{ project.id }}</td>
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let project">{{ project.id }}</td>
       </ng-container>
       <ng-container matColumnDef="titre">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Title</th>
-        <td mat-cell *matCellDef="let project" class="px-6 py-4 text-sm text-gray-900">{{ project.titre }}</td>
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let project">{{ project.titre }}</td>
       </ng-container>
       <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Description</th>
-        <td mat-cell *matCellDef="let project" class="px-6 py-4 text-sm text-gray-600">{{ project.description }}</td>
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let project">{{ project.description }}</td>
       </ng-container>
       <ng-container matColumnDef="dateDebut">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Start Date</th>
-        <td mat-cell *matCellDef="let project" class="px-6 py-4 text-sm text-gray-900">{{ project.dateDebut }}</td>
+        <th mat-header-cell *matHeaderCellDef>Start Date</th>
+        <td mat-cell *matCellDef="let project">{{ project.dateDebut | date }}</td>
       </ng-container>
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
-        <td mat-cell *matCellDef="let project" class="px-6 py-4 text-sm">
-          <button mat-button class="text-red-600 hover:text-red-700 mr-2" (click)="viewDetails(project.id)">Details</button>
-          <button mat-button class="text-red-600 hover:text-red-700 mr-2" (click)="editProject(project.id)">Edit</button>
-          <button mat-button class="text-red-600 hover:text-red-700 mr-2" (click)="deleteProject(project.id)">Delete</button>
-          <button mat-button class="text-red-600 hover:text-red-700" (click)="viewStats(project.id)">Stats</button>
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let project">
+          <button mat-button (click)="viewDetails(project.id)">Details</button>
+          <button *ngIf="role==='ADMIN' || (role==='PROF' && project.professorId===userId)"
+                  mat-button (click)="editProject(project.id)">Edit</button>
+          <button *ngIf="role==='ADMIN' || (role==='PROF' && project.professorId===userId)"
+                  mat-button (click)="deleteProject(project.id)">Delete</button>
+          <button mat-button (click)="viewStats(project.id)">Stats</button>
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-all duration-200"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
 </div>

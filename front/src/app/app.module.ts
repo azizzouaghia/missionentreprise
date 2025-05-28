@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     MatSelectModule,
     MatCardModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    CommonModule
   ],
   providers: [
     {
