@@ -19,6 +19,7 @@ export class FeedbackService {
     return this.http.get<Feedback>(`${this.apiUrl}/${id}`);
   }
 
+  // This method still exists, but the backend now returns all feedback for all phases of a project
   getFeedbackByProject(projectId: number): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(`${this.apiUrl}/project/${projectId}`);
   }
@@ -27,11 +28,12 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(`${this.apiUrl}/professor/${professorId}`);
   }
 
-  createFeedback(feedback: Feedback): Observable<Feedback> {
+  // The request body for create and update now expects a phaseId
+  createFeedback(feedback: Partial<Feedback>): Observable<Feedback> {
     return this.http.post<Feedback>(this.apiUrl, feedback);
   }
 
-  updateFeedback(id: number, feedback: Feedback): Observable<Feedback> {
+  updateFeedback(id: number, feedback: Partial<Feedback>): Observable<Feedback> {
     return this.http.put<Feedback>(`${this.apiUrl}/${id}`, feedback);
   }
 

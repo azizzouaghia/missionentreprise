@@ -6,6 +6,6 @@ import lombok.Data;
 public class FeedbackRequest {
     private String commentaire;
     private Integer note;
-    private Long projectId;
+    private Long phaseId; // Changed from projectId
     private Long professorId;
 }

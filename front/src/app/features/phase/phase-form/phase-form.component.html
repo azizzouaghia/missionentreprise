@@ -1,49 +1,69 @@
-<div class="card max-w-md mx-auto mt-8">
-  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ phaseId ? 'Edit' : 'Create' }} Phase</h2>
-  <form [formGroup]="phaseForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Name</mat-label>
-      <input matInput formControlName="name" class="text-gray-900">
-      <mat-error *ngIf="phaseForm.get('name')?.hasError('required')" class="text-red-600 text-sm">
-        Name is required
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Description</mat-label>
-      <textarea matInput formControlName="description" class="text-gray-900"></textarea>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Start Date</mat-label>
-      <input matInput formControlName="dateDebut" type="date" class="text-gray-900">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">End Date</mat-label>
-      <input matInput formControlName="dateFin" type="date" class="text-gray-900">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Status</mat-label>
-      <mat-select formControlName="status" class="text-gray-900">
-        <mat-option value="PLANNED">Planned</mat-option>
-        <mat-option value="IN_PROGRESS">In Progress</mat-option>
-        <mat-option value="COMPLETED">Completed</mat-option>
-        <mat-option value="ON_HOLD">On Hold</mat-option>
-        <mat-option value="CANCELLED">Cancelled</mat-option>
-      </mat-select>
-      <mat-error *ngIf="phaseForm.get('status')?.hasError('required')" class="text-red-600 text-sm">
-        Status is required
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Project</mat-label>
-      <mat-select formControlName="projectId" class="text-gray-900">
-        <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="phaseForm.get('projectId')?.hasError('required')" class="text-red-600 text-sm">
-        Project is required
-      </mat-error>
-    </mat-form-field>
-    <button type="submit" class="btn-primary" [disabled]="phaseForm.invalid">
-      {{ phaseId ? 'Update' : 'Create' }}
-    </button>
-  </form>
+<div class="max-w-3xl mx-auto">
+    <div class="card !p-8">
+        <div class="flex items-center gap-4 mb-2">
+            <mat-icon class="!w-10 !h-10 text-indigo-500">layers</mat-icon>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">{{ phaseId ? 'Edit' : 'Create a New' }} Phase</h2>
+                <p class="text-sm text-gray-500">Define a new stage for a project timeline.</p>
+            </div>
+        </div>
+        <mat-divider class="my-6"></mat-divider>
+
+        <form [formGroup]="phaseForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-6">
+            <mat-form-field appearance="outline">
+                <mat-label>Phase Name</mat-label>
+                <input matInput formControlName="name">
+                <mat-icon matPrefix class="text-gray-400">flag</mat-icon>
+                <mat-error *ngIf="phaseForm.get('name')?.hasError('required')">Name is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Description (Optional)</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+                <mat-icon matPrefix class="text-gray-400">description</mat-icon>
+            </mat-form-field>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Start Date (Optional)</mat-label>
+                    <input matInput formControlName="dateDebut" type="date">
+                    <mat-icon matPrefix class="text-gray-400">event</mat-icon>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>End Date (Optional)</mat-label>
+                    <input matInput formControlName="dateFin" type="date">
+                    <mat-icon matPrefix class="text-gray-400">event_busy</mat-icon>
+                </mat-form-field>
+            </div>
+            
+             <mat-form-field appearance="outline">
+                <mat-label>Project</mat-label>
+                <mat-select formControlName="projectId">
+                    <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix class="text-gray-400">assignment</mat-icon>
+                <mat-error *ngIf="phaseForm.get('projectId')?.hasError('required')">Project is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="PLANNED">Planned</mat-option>
+                    <mat-option value="IN_PROGRESS">In Progress</mat-option>
+                    <mat-option value="COMPLETED">Completed</mat-option>
+                    <mat-option value="ON_HOLD">On Hold</mat-option>
+                    <mat-option value="CANCELLED">Cancelled</mat-option>
+                </mat-select>
+                 <mat-icon matPrefix class="text-gray-400">sync_alt</mat-icon>
+                 <mat-error *ngIf="phaseForm.get('status')?.hasError('required')">Status is required</mat-error>
+            </mat-form-field>
+            
+            <div class="pt-4 border-t border-gray-200">
+                 <button type="submit" mat-flat-button color="primary" class="w-full !py-6" [disabled]="phaseForm.invalid">
+                    <mat-icon>{{ phaseId ? 'save' : 'add_circle' }}</mat-icon>
+                    <span>{{ phaseId ? 'Save Changes' : 'Create Phase' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

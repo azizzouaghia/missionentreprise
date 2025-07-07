@@ -12,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = {"students", "feedbacks", "professor", "phases"})
+// --- REMOVED "feedbacks" FROM THE EXCLUDE LIST ---
+@EqualsAndHashCode(exclude = {"students", "professor", "phases"})
 @Table(name = "project")
 public class Project {
     @Id
@@ -33,9 +34,10 @@ public class Project {
     @JsonIgnoreProperties("projects")
     private Set<Student> students = new HashSet<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("project")
-    private Set<Feedback> feedbacks = new HashSet<>();
+    // --- THIS ENTIRE BLOCK WAS REMOVED AS IT'S NO LONGER VALID ---
+    // @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @JsonIgnoreProperties("project")
+    // private Set<Feedback> feedbacks = new HashSet<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("project")

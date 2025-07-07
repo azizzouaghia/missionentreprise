@@ -1,64 +1,109 @@
-<div class="max-w-6xl mx-auto px-6 py-8">
-  <h2 class="text-3xl font-bold text-gray-900 mb-8">System Statistics</h2>
-  
-  <!-- Error Message -->
-  <div *ngIf="chartError" class="card bg-red-50 border-red-200 mb-6">
-    <p class="text-red-600">{{ chartError }}</p>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">System Dashboard</h1>
+        <p class="mt-1 text-sm text-gray-600">A high-level overview of all system-wide metrics and activity.</p>
+    </div>
 
-  <!-- Fallback Text Display if Charts Fail -->
-  <div *ngIf="stats && chartError" class="card mb-6">
-    <h3 class="text-xl font-semibold text-gray-900 mb-4">Statistics (Text Fallback)</h3>
-    <div class="space-y-4">
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Professors:</span> {{ stats.totalProfessors }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Students:</span> {{ stats.totalStudents }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Admins:</span> {{ stats.totalAdmins }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Projects:</span> {{ stats.totalProjects }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Active Projects:</span> {{ stats.activeProjects }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Completed Projects:</span> {{ stats.completedProjects }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Project Completion Rate:</span> {{ stats.projectCompletionRate }}%</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Total Phases:</span> {{ stats.totalPhases }}</p>
-      <p *ngFor="let item of stats.phasesByStatus | keyvalue" class="text-gray-900">
-        <span class="font-medium text-gray-700">{{ item.key }} Phases:</span> {{ item.value }}
-      </p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Average Feedback Score:</span> {{ stats.averageFeedbackScore }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Average Commits per Project:</span> {{ stats.averageCommitsPerProject }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Students Assigned:</span> {{ stats.studentsAssigned }}</p>
-      <p class="text-gray-900"><span class="font-medium text-gray-700">Professors with Projects:</span> {{ stats.professorsWithProjects }}</p>
-    </div>
-  </div>
+    <div *ngIf="stats; else loadingOrError">
 
-  <!-- Charts Display -->
-  <div *ngIf="stats && !chartError" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- User Types Bar Chart -->
-    <div class="card">
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">User Distribution</h3>
-      <canvas id="user-timeline" aria-label="Bar chart showing distribution of professors, students, and admins"></canvas>
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200/80">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-sky-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+                                <dd class="text-3xl font-bold text-gray-900">{{ stats.totalProfessors + stats.totalStudents + stats.totalAdmins }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200/80">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-emerald-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Projects</dt>
+                                <dd class="text-3xl font-bold text-gray-900">{{ stats.totalProjects }}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200/80">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-amber-500 rounded-md p-3">
+                             <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Avg. Feedback Score</dt>
+                                <dd class="text-3xl font-bold text-gray-900">{{ stats.averageFeedbackScore | number:'1.1-2' }} / 5</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-gray-200/80">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-rose-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Project Completion Rate</dt>
+                                <dd class="text-3xl font-bold text-gray-900">{{ stats.projectCompletionRate | number:'1.0-0' }}%</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">User Distribution</h3>
+                <div class="h-80"><canvas id="user-chart"></canvas></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Project Status</h3>
+                <div class="h-80"><canvas id="project-chart"></canvas></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Phase Status</h3>
+                <div class="h-80"><canvas id="phase-chart"></canvas></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80 flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Average Feedback Score</h3>
+                <div class="h-40 w-full"><canvas id="feedback-gauge"></canvas></div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200/80 flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Average Commits Per Project</h3>
+                <div class="h-40 w-full"><canvas id="commits-gauge"></canvas></div>
+            </div>
+        </div>
+
     </div>
-    <!-- Phases Pie Chart -->
-    <div class="card">
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">Phase Status</h3>
-      <canvas id="phase-timeline" aria-label="Pie chart showing distribution of phase statuses"></canvas>
-    </div>
-    <!-- Projects Doughnut Chart -->
-    <div class="card">
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">Project Status</h3>
-      <canvas id="project-timeline" aria-label="Doughnut chart showing project statuses"></canvas>
-    </div>
-    <!-- Metrics Line Chart -->
-    <div class="card lg:col-span-2">
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Metrics</h3>
-      <canvas id="metrics-timeline" aria-label="Line chart showing average feedback score and commits per project"></canvas>
-    </div>
-    <!-- Simple Stats Card -->
-    <div class="card">
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">Additional Metrics</h3>
-      <div class="space-y-4">
-        <p class="text-gray-900"><span class="font-medium text-gray-700">Total Phases:</span> {{ stats.totalPhases }}</p>
-        <p class="text-gray-900"><span class="font-medium text-gray-700">Students Assigned:</span> {{ stats.studentsAssigned }}</p>
-        <p class="text-gray-900"><span class="font-medium text-gray-700">Professors with Projects:</span> {{ stats.professorsWithProjects }}</p>
-        <p class="text-gray-900"><span class="font-medium text-gray-700">Project Completion Rate:</span> {{ stats.projectCompletionRate }}%</p>
-      </div>
-    </div>
-  </div>
+
+    <ng-template #loadingOrError>
+        <div class="text-center py-16 card border-dashed">
+            <p *ngIf="!chartError">Loading dashboard...</p>
+            <p *ngIf="chartError" class="text-red-600">{{ chartError }}</p>
+        </div>
+    </ng-template>
+
 </div>

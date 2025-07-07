@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon'; // Import MatIconModule
 
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectFormComponent } from './project-form/project-form.component';
@@ -36,6 +37,7 @@ const routes: Routes = [
     MatCardModule,
     MatListModule,
     ReactiveFormsModule,
+    MatIconModule, // Add MatIconModule here
     ProjectListComponent,
     ProjectFormComponent,
     ProjectDetailComponent,

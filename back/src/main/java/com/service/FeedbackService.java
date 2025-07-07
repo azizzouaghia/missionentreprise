@@ -3,11 +3,11 @@ package com.service;
 import com.dto.FeedbackRequest;
 import com.dto.FeedbackResponse;
 import com.entity.Feedback;
-import com.entity.Project;
+import com.entity.Phase; // Changed from Project
 import com.entity.Role;
 import com.entity.User;
 import com.repository.FeedbackRepository;
-import com.repository.ProjectRepository;
+import com.repository.PhaseRepository; // Changed from ProjectRepository
 import com.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
-    private final ProjectRepository projectRepository;
+    private final PhaseRepository phaseRepository; // Changed
     private final UserRepository userRepository;
 
     @Transactional
     public FeedbackResponse createFeedback(FeedbackRequest request) {
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+        Phase phase = phaseRepository.findById(request.getPhaseId()) // Changed
+                .orElseThrow(() -> new RuntimeException("Phase not found with id: " + request.getPhaseId()));
 
         User professor = userRepository.findById(request.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getProfessorId()));
@@ -40,7 +40,7 @@ public class FeedbackService {
         feedback.setCommentaire(request.getCommentaire());
         feedback.setNote(request.getNote());
         feedback.setDate(LocalDate.now());
-        feedback.setProject(project);
+        feedback.setPhase(phase); // Changed
         feedback.setProfessor(professor);
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
@@ -65,11 +65,21 @@ public class FeedbackService {
                 .collect(Collectors.toList());
     }
 
+    // This method now gets all feedback for a given project by first finding its phases
     public List<FeedbackResponse> getByProject(Long projectId) {
-        return feedbackRepository.findByProjectId(projectId).stream()
+        List<Long> phaseIds = phaseRepository.findByProjectId(projectId).stream()
+            .map(Phase::getId)
+            .collect(Collectors.toList());
+
+        if (phaseIds.isEmpty()) {
+            return List.of();
+        }
+
+        return feedbackRepository.findByPhaseIdIn(phaseIds).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+
 
     public Double getAverageNoteByProjectId(Long projectId) {
         return feedbackRepository.avgNoteByProjectId(projectId);
@@ -84,8 +94,8 @@ public class FeedbackService {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Feedback not found with id: " + id));
 
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+        Phase phase = phaseRepository.findById(request.getPhaseId()) // Changed
+                .orElseThrow(() -> new RuntimeException("Phase not found with id: " + request.getPhaseId()));
 
         User professor = userRepository.findById(request.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getProfessorId()));
@@ -97,7 +107,7 @@ public class FeedbackService {
         feedback.setCommentaire(request.getCommentaire());
         feedback.setNote(request.getNote());
         feedback.setDate(LocalDate.now());
-        feedback.setProject(project);
+        feedback.setPhase(phase); // Changed
         feedback.setProfessor(professor);
 
         Feedback updatedFeedback = feedbackRepository.save(feedback);
@@ -117,7 +127,7 @@ public class FeedbackService {
                 .commentaire(feedback.getCommentaire())
                 .note(feedback.getNote())
                 .date(feedback.getDate())
-                .projectId(feedback.getProject().getId())
+                .phaseId(feedback.getPhase().getId()) // Changed
                 .professorId(feedback.getProfessor().getId())
                 .professorName(feedback.getProfessor().getActualUsername())
                 .build();

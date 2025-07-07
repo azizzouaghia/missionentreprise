@@ -1,12 +1,87 @@
-<div class="card max-w-md mx-auto mt-8" *ngIf="user">
-  <h2 class="text-3xl font-bold text-gray-900 mb-6">User Profile</h2>
-  <div class="space-y-4">
-    <p class="text-gray-900"><span class="font-medium text-gray-700">Username:</span> {{ user.username }}</p>
-    <p class="text-gray-900"><span class="font-medium text-gray-700">Email:</span> {{ user.email }}</p>
-    <p class="text-gray-900"><span class="font-medium text-gray-700">Role:</span> {{ user.role }}</p>
-    <p class="text-gray-900" *ngIf="user.matricule"><span class="font-medium text-gray-700">Matricule:</span> {{ user.matricule }}</p>
-    <p class="text-gray-900" *ngIf="user.niveau"><span class="font-medium text-gray-700">Niveau:</span> {{ user.niveau }}</p>
-    <p class="text-gray-900" *ngIf="user.specialite"><span class="font-medium text-gray-700">Specialite:</span> {{ user.specialite }}</p>
-    <p class="text-gray-900" *ngIf="user.bureau"><span class="font-medium text-gray-700">Bureau:</span> {{ user.bureau }}</p>
+<div class="max-w-7xl mx-auto" *ngIf="user; else loading">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    
+    <div class="md:col-span-1">
+      <div class="card p-6 text-center">
+        <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto flex items-center justify-center mb-4">
+          <mat-icon class="!w-20 !h-20 text-gray-500">person</mat-icon>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900">{{ user.username }}</h2>
+        <p class="text-md text-gray-600">{{ user.email }}</p>
+        <div class="mt-2">
+            <span class="px-3 py-1 text-sm font-semibold rounded-full"
+                  [ngClass]="{
+                    'bg-sky-100 text-sky-800': user.role === 'PROF',
+                    'bg-emerald-100 text-emerald-800': user.role === 'ETUDIANT',
+                    'bg-rose-100 text-rose-800': user.role === 'ADMIN'
+                  }">
+              {{ user.role | titlecase }}
+            </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-2 space-y-8">
+      <div class="card">
+        <h3 class="text-xl font-semibold text-gray-900 px-6 pt-5">Details</h3>
+        <mat-divider class="my-4"></mat-divider>
+        <mat-list role="list">
+          <ng-container *ngIf="user.role === 'PROF'">
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon class="text-gray-500">school</mat-icon>
+              <div matListItemTitle>Specialty</div>
+              <div matListItemLine class="text-gray-800">{{ user.specialite || 'N/A' }}</div>
+            </mat-list-item>
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon class="text-gray-500">meeting_room</mat-icon>
+              <div matListItemTitle>Office</div>
+              <div matListItemLine class="text-gray-800">{{ user.bureau || 'N/A' }}</div>
+            </mat-list-item>
+          </ng-container>
+          <ng-container *ngIf="user.role === 'ETUDIANT'">
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon class="text-gray-500">badge</mat-icon>
+              <div matListItemTitle>Matricule</div>
+              <div matListItemLine class="text-gray-800">{{ user.matricule || 'N/A' }}</div>
+            </mat-list-item>
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon class="text-gray-500">signal_cellular_alt</mat-icon>
+              <div matListItemTitle>Level</div>
+              <div matListItemLine class="text-gray-800">{{ user.niveau || 'N/A' }}</div>
+            </mat-list-item>
+          </ng-container>
+          <ng-container *ngIf="user.role === 'ADMIN'">
+             <mat-list-item role="listitem">
+              <mat-icon matListItemIcon class="text-gray-500">info</mat-icon>
+              <div matListItemTitle>System Administrator</div>
+              <div matListItemLine class="text-gray-800">Full access to all system resources.</div>
+            </mat-list-item>
+          </ng-container>
+        </mat-list>
+      </div>
+
+      <div class="card" *ngIf="user.role !== 'ADMIN' && (projects$ | async) as projects">
+         <h3 class="text-xl font-semibold text-gray-900 px-6 pt-5">Assigned Projects</h3>
+         <mat-divider class="my-4"></mat-divider>
+         <div *ngIf="projects.length > 0; else noProjects">
+            <mat-list role="list">
+                <a mat-list-item [routerLink]="['/projects/detail', project.id]" *ngFor="let project of projects" class="hover:bg-gray-50">
+                    <mat-icon matListItemIcon class="text-red-500">folder_special</mat-icon>
+                    <div matListItemTitle>{{ project.titre }}</div>
+                    <div matListItemLine>Start Date: {{ project.dateDebut | date }}</div>
+                </a>
+            </mat-list>
+         </div>
+         <ng-template #noProjects>
+            <p class="px-6 pb-5 text-gray-500 italic">No projects assigned yet.</p>
+         </ng-template>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #loading>
+    <div class="text-center p-8">
+        <p>Loading profile...</p>
+    </div>
+</ng-template>

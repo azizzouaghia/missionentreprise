@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,6 +9,18 @@ export class GitlabService {
   private apiUrl = 'http://localhost:8089/api/gitlab';
 
   constructor(private http: HttpClient) { }
+
+  // --- NEW: Get repository tree ---
+  getRepositoryTree(projectId: string, ref: string, path: string = ''): Observable<any[]> {
+    const params = new HttpParams().set('ref', ref).set('path', path);
+    return this.http.get<any[]>(`${this.apiUrl}/projects/${projectId}/repository/tree`, { params });
+  }
+
+  // --- NEW: Get file content ---
+  getFileContent(projectId: string, ref: string, filePath: string): Observable<any> {
+    const params = new HttpParams().set('ref', ref).set('filePath', filePath);
+    return this.http.get<any>(`${this.apiUrl}/projects/${projectId}/repository/files`, { params });
+  }
 
   getAllProjects(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/projects`);
@@ -20,6 +32,10 @@ export class GitlabService {
 
   getProjectCommits(projectId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/projects/${projectId}/commits`);
+  }
+
+  getSingleCommit(projectId: string, commitId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/projects/${projectId}/commits/${commitId}`);
   }
 
   getProjectBranches(projectId: string): Observable<any[]> {

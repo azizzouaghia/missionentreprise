@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px); /* Adjust based on navbar/footer height */
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+.branding-panel {
+  background: linear-gradient(to top right, #c81e1e, #ef4444);
+}
+
+/* Make the stepper headers look cleaner */
+::ng-deep .mat-step-header {
+    pointer-events: none !important;
+}

@@ -6,7 +6,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,71 @@ public class GitLabService {
         this.restTemplate = restTemplate;
     }
 
+    // --- NEW: Method to fetch repository tree ---
+    public ResponseEntity<List<Map<String, Object>>> fetchRepositoryTree(String projectId, String ref, String path) {
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = UriComponentsBuilder.fromHttpUrl(gitLabApiUrl + "/projects/" + projectId + "/repository/tree")
+                .queryParam("ref", ref)
+                .queryParam("path", path)
+                .toUriString();
+        
+        return restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<>() {}
+        );
+    }
+    
+    // --- NEW: Method to fetch and decode file content ---
+    public ResponseEntity<Map<String, Object>> fetchFileContent(String projectId, String ref, String filePath) {
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = UriComponentsBuilder.fromHttpUrl(gitLabApiUrl + "/projects/" + projectId + "/repository/files/" + filePath.replace("/", "%2F"))
+                .queryParam("ref", ref)
+                .toUriString();
+        
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            new ParameterizedTypeReference<>() {}
+        );
+
+        // Decode the base64 content for the frontend
+        Map<String, Object> body = response.getBody();
+        if (body != null && body.containsKey("content")) {
+            String encodedContent = (String) body.get("content");
+            byte[] decodedBytes = Base64.getDecoder().decode(encodedContent);
+            String decodedContent = new String(decodedBytes);
+            body.put("content", decodedContent); // Replace encoded with decoded
+        }
+        
+        return ResponseEntity.ok(body);
+    }
+    
+    public ResponseEntity<Map<String, Object>> fetchSingleCommit(String projectId, String commitSha) {
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        String metaUrl = gitLabApiUrl + "/projects/" + projectId + "/repository/commits/" + commitSha;
+        ResponseEntity<Map<String, Object>> metaResponse = restTemplate.exchange(
+            metaUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+
+        String diffUrl = gitLabApiUrl + "/projects/" + projectId + "/repository/commits/" + commitSha + "/diff";
+        ResponseEntity<List<Map<String, Object>>> diffResponse = restTemplate.exchange(
+            diffUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {});
+
+        Map<String, Object> combinedResponse = metaResponse.getBody();
+        if (combinedResponse != null) {
+            combinedResponse.put("diff", diffResponse.getBody());
+        }
+
+        return ResponseEntity.ok(combinedResponse);
+    }
+    
+    // ... other existing methods ...
     public ResponseEntity<List<Map<String, Object>>> fetchAllProjects() {
         HttpHeaders headers = createHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);

@@ -20,6 +20,24 @@ public class GitLabController {
         return gitLabService.fetchAllProjects();
     }
 
+    // --- NEW: Endpoint to get the repository file tree ---
+    @GetMapping("/projects/{projectId}/repository/tree")
+    public ResponseEntity<List<Map<String, Object>>> getRepositoryTree(
+            @PathVariable String projectId,
+            @RequestParam String ref,
+            @RequestParam(required = false, defaultValue = "") String path) {
+        return gitLabService.fetchRepositoryTree(projectId, ref, path);
+    }
+
+    // --- NEW: Endpoint to get a single file's content ---
+    @GetMapping("/projects/{projectId}/repository/files")
+    public ResponseEntity<Map<String, Object>> getFileContent(
+            @PathVariable String projectId,
+            @RequestParam String ref,
+            @RequestParam String filePath) {
+        return gitLabService.fetchFileContent(projectId, ref, filePath);
+    }
+
     @PostMapping("/projects")
     public ResponseEntity<Map<String, Object>> createProject(
             @RequestParam String name,
@@ -31,6 +49,13 @@ public class GitLabController {
     public ResponseEntity<List<Map<String, Object>>> getProjectCommits(
             @PathVariable String projectId) {
         return gitLabService.fetchProjectCommits(projectId);
+    }
+
+    @GetMapping("/projects/{projectId}/commits/{commitId}")
+    public ResponseEntity<Map<String, Object>> getSingleCommit(
+            @PathVariable String projectId,
+            @PathVariable String commitId) {
+        return gitLabService.fetchSingleCommit(projectId, commitId);
     }
 
     @GetMapping("/projects/{projectId}/branches")

@@ -11,11 +11,14 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon'; // --- IMPORT MatIconModule ---
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-phase-form',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  // --- ADD MatIconModule to imports ---
+  imports: [MatDividerModule,CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
   templateUrl: './phase-form.component.html',
 })
 export class PhaseFormComponent implements OnInit {

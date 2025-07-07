@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="max-w-6xl mx-auto px-6 py-8">
   <div class="flex justify-between items-center mb-8">
     <h2 class="text-3xl font-bold text-gray-900">Projects</h2>
@@ -39,3 +40,81 @@
     </table>
   </div>
 </div>
+=======
+<div class="max-w-7xl mx-auto py-8">
+  <div class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">Projects</h1>
+        <div class="flex items-center gap-2">
+            <mat-form-field appearance="outline" class="w-full md:w-64" subscriptSizing="dynamic">
+              <mat-label>Search Projects</mat-label>
+              <input matInput [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <button mat-flat-button color="primary" routerLink="/projects/create" class="!h-14">
+              <mat-icon>add</mat-icon>
+              <span>Create</span>
+            </button>
+        </div>
+    </div>
+    <div class="mt-4 flex items-center gap-2">
+        <span class="text-sm font-medium text-gray-600">Status:</span>
+        <button (click)="filterByStatus('All')" [ngClass]="statusFilter === 'All' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-3 py-1 text-sm rounded-full font-semibold transition-colors">All</button>
+        <button (click)="filterByStatus('Active')" [ngClass]="statusFilter === 'Active' ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-3 py-1 text-sm rounded-full font-semibold transition-colors">Active</button>
+        <button (click)="filterByStatus('Completed')" [ngClass]="statusFilter === 'Completed' ? 'bg-gray-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-3 py-1 text-sm rounded-full font-semibold transition-colors">Completed</button>
+        <button (click)="filterByStatus('Upcoming')" [ngClass]="statusFilter === 'Upcoming' ? 'bg-sky-600 text-white' : 'bg-gray-200 text-gray-700'" class="px-3 py-1 text-sm rounded-full font-semibold transition-colors">Upcoming</button>
+    </div>
+  </div>
+
+  <div *ngIf="filteredProjects.length > 0; else noProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div *ngFor="let project of filteredProjects" class="card flex flex-col justify-between !p-0 hover:shadow-2xl transition-shadow duration-300">
+      <div class="p-6">
+        <div class="flex justify-between items-start mb-2">
+            <h2 class="text-xl font-bold text-gray-900 truncate pr-4">{{ project.titre }}</h2>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full capitalize" [ngClass]="{
+                'bg-emerald-100 text-emerald-800': getProjectStatus(project) === 'Active',
+                'bg-gray-100 text-gray-800': getProjectStatus(project) === 'Completed',
+                'bg-sky-100 text-sky-800': getProjectStatus(project) === 'Upcoming'
+            }">
+                {{ getProjectStatus(project) }}
+            </span>
+        </div>
+        <p class="text-gray-600 text-sm h-20 overflow-hidden text-ellipsis">{{ project.description || 'No description provided.' }}</p>
+        <div class="mt-4 flex items-center text-sm text-gray-500">
+            <mat-icon class="!w-4 !h-4 mr-2">calendar_today</mat-icon>
+            <span>{{ project.dateDebut | date:'mediumDate' }}</span>
+        </div>
+      </div>
+      <div class="bg-gray-50 p-3 border-t flex items-center justify-end gap-1">
+        <button mat-icon-button (click)="viewStats(project.id)" matTooltip="View Stats">
+          <mat-icon>bar_chart</mat-icon>
+        </button>
+        <button mat-icon-button (click)="viewDetails(project.id)" matTooltip="View Details">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="editProject(project.id)" matTooltip="Edit Project">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteProject(project.id)" matTooltip="Delete Project">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noProjects>
+    <div class="text-center py-16 card border-dashed">
+        <mat-icon class="!w-16 !h-16 text-gray-400">folder_off</mat-icon>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">No projects found</h3>
+        <p class="mt-1 text-sm text-gray-500">There are no projects that match your current filters.</p>
+        <div class="mt-6">
+            <button mat-flat-button color="primary" routerLink="/projects/create">
+                <mat-icon>add</mat-icon>
+                <span>Create Your First Project</span>
+            </button>
+        </div>
+    </div>
+  </ng-template>
+
+</div>
+>>>>>>> 9647786 (footer)

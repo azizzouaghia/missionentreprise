@@ -4,18 +4,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../../../services/project.service';
 import { ProfessorService } from '../../../services/professor.service';
 import { User } from '../../../models/user';
-import { Project } from '../../../models/project';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon'; // --- IMPORT MatIconModule ---
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-project-form',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
+  // --- ADD MatIconModule to imports ---
+  imports: [MatDividerModule,CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
   templateUrl: './project-form.component.html',
 })
 export class ProjectFormComponent implements OnInit {

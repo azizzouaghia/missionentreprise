@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = {"project", "professor"})
+@EqualsAndHashCode(exclude = {"phase", "professor"}) // Updated exclude
 @Table(name = "feedback")
 public class Feedback {
     @Id
@@ -20,10 +20,11 @@ public class Feedback {
     private Integer note;
     private LocalDate date;
 
+    // --- CHANGED RELATIONSHIP FROM PROJECT TO PHASE ---
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "phase_id") // Changed from project_id
     @JsonIgnore
-    private Project project;
+    private Phase phase;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")

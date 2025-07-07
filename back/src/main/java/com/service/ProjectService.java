@@ -174,7 +174,6 @@ public class ProjectService {
                 gitLabService.getCommitCount(project.getGitlabProjectId()) : 0);
         stats.put("averageFeedbackScore", feedbackRepository.avgNoteByProjectId(projectId) != null ?
                 feedbackRepository.avgNoteByProjectId(projectId) : 0.0);
-        stats.put("feedbackCount", feedbackRepository.findByProjectId(projectId).size());
         stats.put("teamSize", project.getStudents().size());
         stats.put("phaseCount", phaseRepository.findByProjectId(projectId).size());
         Map<PhaseStatus, Long> phaseStatusCounts = phaseRepository.findByProjectId(projectId).stream()

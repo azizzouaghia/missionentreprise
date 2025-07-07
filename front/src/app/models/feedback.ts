@@ -3,7 +3,7 @@ export interface Feedback {
   commentaire: string;
   note: number;
   date: string;
-  projectId: number;
+  phaseId: number; // Changed from projectId
   professorId: number;
   professorName: string;
 }

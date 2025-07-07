@@ -1,0 +1,12 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+/* Ensure the pre/code block for highlighting fills its container */
+pre, code {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}

@@ -1,11 +1,24 @@
 <div class="max-w-6xl mx-auto px-6 py-8" *ngIf="project">
   <div class="card">
+<<<<<<< HEAD
     <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ project.titre }}</h2>
+=======
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h2 class="text-3xl font-bold text-gray-900">{{ project.titre }}</h2>
+        <p class="text-gray-600 mt-1">{{ project.description }}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-lg font-medium text-gray-700">Total Project Score</p>
+        <p class="text-4xl font-bold text-red-600">{{ totalProjectScore }}</p>
+      </div>
+    </div>
+    
+>>>>>>> 9647786 (footer)
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <h3 class="text-xl font-semibold text-gray-900 mb-4">Project Details</h3>
         <div class="space-y-4">
-          <p><span class="font-medium text-gray-700">Description:</span> {{ project.description }}</p>
           <p><span class="font-medium text-gray-700">Start Date:</span> {{ project.dateDebut }}</p>
           <p><span class="font-medium text-gray-700">End Date:</span> {{ project.dateFin || 'N/A' }}</p>
           <p><span class="font-medium text-gray-700">GitLab Project ID:</span> {{ project.gitlabProjectId || 'N/A' }}</p>
@@ -33,6 +46,7 @@
       </div>
     </div>
     <div class="mt-8">
+<<<<<<< HEAD
       <h3 class="text-xl font-semibold text-gray-900 mb-4">Phases</h3>
       <div class="space-y-2">
         <div *ngFor="let phase of phases" class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
@@ -46,6 +60,63 @@
                 }">
             {{ phase.status }}
           </span>
+=======
+      <h3 class="text-xl font-semibold text-gray-900 mb-4">Phases & Feedback</h3>
+      <div class="space-y-6">
+        <div *ngFor="let phase of phases" class="p-4 rounded-lg border border-gray-200 bg-white">
+          <div class="flex flex-col md:flex-row md:justify-between md:items-start">
+            <div>
+              <div class="flex items-center gap-4 mb-2">
+                <span class="text-gray-900 font-medium text-lg">{{ phase.name }}</span>
+                <span class="px-2 py-0.5 text-xs font-semibold rounded-full capitalize"
+                      [ngClass]="{
+                        'bg-green-100 text-green-800': phase.status === 'COMPLETED',
+                        'bg-blue-100 text-blue-800': phase.status === 'IN_PROGRESS',
+                        'bg-gray-100 text-gray-800': phase.status === 'PLANNED',
+                        'bg-yellow-100 text-yellow-800': phase.status === 'ON_HOLD' || phase.status === 'CANCELLED'
+                      }">
+                  {{ phase.status }}
+                </span>
+              </div>
+              <a *ngIf="phase.commitId && project.gitlabProjectId" 
+                 [routerLink]="['/gitlab/commit', project.gitlabProjectId, phase.commitId]"
+                 class="text-xs font-mono bg-blue-200 text-blue-800 px-2 py-1 rounded inline-block hover:bg-blue-300 hover:underline cursor-pointer">
+                Linked Commit: {{ phase.commitId.substring(0, 8) }}
+              </a>
+            </div>
+            
+            <div class="flex items-center gap-2 mt-4 md:mt-0" *ngIf="project.gitlabProjectId">
+              <mat-form-field appearance="outline" class="w-72" subscriptSizing="dynamic">
+                <mat-label>Link a commit</mat-label>
+                <mat-select [(ngModel)]="selectedCommits[phase.id]">
+                  <mat-option *ngFor="let commit of commits" [value]="commit.id">
+                    {{ commit.short_id }} - {{ commit.title }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <button mat-flat-button color="primary" (click)="linkCommit(phase.id)" [disabled]="!selectedCommits[phase.id]">
+                Link
+              </button>
+            </div>
+          </div>
+          
+          <div class="mt-4 pl-4 border-l-2 border-red-200">
+            <h4 class="text-md font-semibold text-gray-800 mb-2">Feedback on this Phase</h4>
+            <div *ngIf="getFeedbackForPhase(phase.id).length > 0; else noFeedback">
+              <div *ngFor="let feedback of getFeedbackForPhase(phase.id)" class="p-2 rounded-md bg-gray-50 mb-2">
+                <div class="flex justify-between items-center">
+                  <p class="text-gray-700">"{{ feedback.commentaire }}"</p>
+                  <p class="font-bold text-red-700">Score: {{feedback.note}}</p>
+                </div>
+                <p class="text-xs text-gray-500 text-right">-- {{ feedback.professorName }} on {{ feedback.date | date }}</p>
+              </div>
+            </div>
+            <ng-template #noFeedback>
+              <p class="text-sm text-gray-500 italic">No feedback submitted for this phase yet.</p>
+            </ng-template>
+          </div>
+>>>>>>> 9647786 (footer)
         </div>
       </div>
     </div>

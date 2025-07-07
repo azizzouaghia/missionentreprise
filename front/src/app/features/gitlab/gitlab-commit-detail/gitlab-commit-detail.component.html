@@ -1,0 +1,40 @@
+<div class="max-w-7xl mx-auto px-6 py-8 h-[calc(100vh-200px)] flex flex-col">
+  <h2 class="text-2xl font-bold text-gray-800 mb-1">Code Browser</h2>
+  <p class="text-sm text-gray-500 mb-4">Viewing repository state at commit <span class="font-mono bg-gray-200 px-1 rounded">{{ commitId.substring(0,8) }}</span></p>
+
+  <div class="flex-grow grid grid-cols-12 gap-4 min-h-0">
+    <div class="col-span-4 card !p-0 overflow-y-auto">
+      <div class="p-3 border-b sticky top-0 bg-gray-50 z-10">
+        <button *ngIf="pathHistory.length > 1" (click)="goBack()" mat-button class="!min-w-0 !p-2 mr-2">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="font-medium text-gray-700 align-middle">{{ getCurrentPath() }}</span>
+      </div>
+      <mat-list role="list" *ngIf="tree$ | async as tree; else loadingTree">
+        <mat-list-item role="listitem" *ngFor="let item of tree" (click)="handleItemClick(item)" class="cursor-pointer hover:bg-gray-100">
+          <mat-icon matListItemIcon>{{ item.type === 'tree' ? 'folder' : 'description' }}</mat-icon>
+          <div matListItemTitle>{{ item.name }}</div>
+        </mat-list-item>
+      </mat-list>
+      <ng-template #loadingTree>
+        <p class="p-4 text-gray-500">Loading file tree...</p>
+      </ng-template>
+    </div>
+
+    <div class="col-span-8 card !p-0 flex flex-col">
+      <div *ngIf="selectedFile; else noFileSelected" class="flex-grow flex flex-col min-h-0">
+        <div class="p-3 border-b bg-gray-50">
+           <p class="font-medium font-mono text-gray-700">{{ selectedFile.name }}</p>
+        </div>
+        <div class="overflow-auto flex-grow">
+           <pre><code [highlight]="selectedFileContent || ''" [language]="selectedFile.name.split('.').pop() || ''"></code></pre>
+        </div>
+      </div>
+       <ng-template #noFileSelected>
+         <div class="flex items-center justify-center h-full">
+            <p class="text-gray-500">Select a file to view its content.</p>
+         </div>
+       </ng-template>
+    </div>
+  </div>
+</div>

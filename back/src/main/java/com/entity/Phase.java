@@ -6,10 +6,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = "project")
+@EqualsAndHashCode(exclude = {"project", "feedbacks"}) // Added feedbacks to exclude
 @Table(name = "phase")
 public class Phase {
     @Id
@@ -35,4 +37,9 @@ public class Phase {
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
+    
+    // --- ADDED ONE-TO-MANY RELATIONSHIP TO FEEDBACK ---
+    @OneToMany(mappedBy = "phase", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Feedback> feedbacks = new HashSet<>();
 }

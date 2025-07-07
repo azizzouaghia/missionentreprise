@@ -16,7 +16,7 @@ public class FeedbackResponse {
     private String commentaire;
     private Integer note;
     private LocalDate date;
-    private Long projectId;
+    private Long phaseId; // Changed from projectId
     private Long professorId;
     private String professorName;
 }

@@ -1,43 +1,62 @@
-<div class="card max-w-md mx-auto mt-8">
-  <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ feedbackId ? 'Edit' : 'Create' }} Feedback</h2>
-  <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Comment</mat-label>
-      <textarea matInput formControlName="commentaire" class="text-gray-900"></textarea>
-      <mat-error *ngIf="feedbackForm.get('commentaire')?.hasError('required')" class="text-red-600 text-sm">
-        Comment is required
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Score (1-5)</mat-label>
-      <input matInput formControlName="note" type="number" min="1" max="5" class="text-gray-900">
-      <mat-error *ngIf="feedbackForm.get('note')?.hasError('required')" class="text-red-600 text-sm">
-        Score is required
-      </mat-error>
-      <mat-error *ngIf="feedbackForm.get('note')?.hasError('min') || feedbackForm.get('note')?.hasError('max')" class="text-red-600 text-sm">
-        Score must be between 1 and 5
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Project</mat-label>
-      <mat-select formControlName="projectId" class="text-gray-900">
-        <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="feedbackForm.get('projectId')?.hasError('required')" class="text-red-600 text-sm">
-        Project is required
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label class="text-gray-700">Professor</mat-label>
-      <mat-select formControlName="professorId" class="text-gray-900">
-        <mat-option *ngFor="let prof of professors" [value]="prof.id">{{ prof.username }}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="feedbackForm.get('professorId')?.hasError('required')" class="text-red-600 text-sm">
-        Professor is required
-      </mat-error>
-    </mat-form-field>
-    <button type="submit" class="btn-primary" [disabled]="feedbackForm.invalid">
-      {{ feedbackId ? 'Update' : 'Create' }}
-    </button>
-  </form>
+<div class="max-w-3xl mx-auto">
+    <div class="card !p-8">
+        <div class="flex items-center gap-4 mb-2">
+            <mat-icon class="!w-10 !h-10 text-amber-500">rate_review</mat-icon>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">{{ feedbackId ? 'Edit' : 'Submit New' }} Feedback</h2>
+                <p class="text-sm text-gray-500">Provide a score and comments for a specific project phase.</p>
+            </div>
+        </div>
+        <mat-divider class="my-6"></mat-divider>
+
+        <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-6">
+            <mat-form-field appearance="outline">
+                <mat-label>1. Select a Project</mat-label>
+                <mat-select (selectionChange)="onProjectSelectionChange($event.value)">
+                     <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.titre }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix class="text-gray-400">assignment</mat-icon>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline">
+                <mat-label>2. Select a Phase</mat-label>
+                <mat-select formControlName="phaseId">
+                     <mat-option *ngFor="let phase of phases" [value]="phase.id">{{ phase.name }}</mat-option>
+                </mat-select>
+                <mat-icon matPrefix class="text-gray-400">layers</mat-icon>
+                 <mat-error *ngIf="feedbackForm.get('phaseId')?.hasError('required')">Phase is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Comments</mat-label>
+                <textarea matInput formControlName="commentaire" cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"></textarea>
+                <mat-icon matPrefix class="text-gray-400">comment</mat-icon>
+                <mat-error *ngIf="feedbackForm.get('commentaire')?.hasError('required')">Comments are required</mat-error>
+            </mat-form-field>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Score (1-5)</mat-label>
+                    <input matInput formControlName="note" type="number" min="1" max="5">
+                    <mat-icon matPrefix class="text-gray-400">star_rate</mat-icon>
+                    <mat-error *ngIf="feedbackForm.get('note')?.hasError('required')">Score is required</mat-error>
+                </mat-form-field>
+                 <mat-form-field appearance="outline">
+                    <mat-label>Professor</mat-label>
+                    <mat-select formControlName="professorId">
+                        <mat-option *ngFor="let prof of professors" [value]="prof.id">{{ prof.username }}</mat-option>
+                    </mat-select>
+                    <mat-icon matPrefix class="text-gray-400">school</mat-icon>
+                     <mat-error *ngIf="feedbackForm.get('professorId')?.hasError('required')">Professor is required</mat-error>
+                </mat-form-field>
+            </div>
+            
+            <div class="pt-4 border-t border-gray-200">
+                 <button type="submit" mat-flat-button color="primary" class="w-full !py-6" [disabled]="feedbackForm.invalid">
+                    <mat-icon>{{ feedbackId ? 'save' : 'add_circle' }}</mat-icon>
+                    <span>{{ feedbackId ? 'Update Feedback' : 'Submit Feedback' }}</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

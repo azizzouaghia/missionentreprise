@@ -1,35 +1,51 @@
 <div class="max-w-6xl mx-auto px-6 py-8">
   <div class="flex justify-between items-center mb-8">
-    <h2 class="text-3xl font-bold text-gray-900">Users</h2>
+    <h2 class="text-3xl font-bold text-gray-900">User Hierarchy</h2>
     <button class="btn-primary" routerLink="/users/create">Create User</button>
   </div>
-  <div class="card">
-    <table mat-table [dataSource]="users" class="w-full divide-y divide-gray-200">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ID</th>
-        <td mat-cell *matCellDef="let user" class="px-6 py-4 text-sm text-gray-900">{{ user.id }}</td>
-      </ng-container>
-      <ng-container matColumnDef="username">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Username</th>
-        <td mat-cell *matCellDef="let user" class="px-6 py-4 text-sm text-gray-900">{{ user.username }}</td>
-      </ng-container>
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Email</th>
-        <td mat-cell *matCellDef="let user" class="px-6 py-4 text-sm text-gray-900">{{ user.email }}</td>
-      </ng-container>
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Role</th>
-        <td mat-cell *matCellDef="let user" class="px-6 py-4 text-sm text-gray-900">{{ user.role }}</td>
-      </ng-container>
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="bg-gray-50 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Actions</th>
-        <td mat-cell *matCellDef="let user" class="px-6 py-4 text-sm">
-          <button mat-button class="text-red-600 hover:text-red-700 mr-2" (click)="editUser(user.id)">Edit</button>
-          <button mat-button class="text-red-600 hover:text-red-700" (click)="deleteUser(user.id)">Delete</button>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-all duration-200"></tr>
-    </table>
+
+  <div *ngIf="isLoading" class="card text-center">
+    <p class="text-gray-600">Loading hierarchy...</p>
   </div>
+
+  <div *ngIf="!isLoading && hierarchy.length === 0" class="card text-center">
+      <p class="text-gray-600">No professors found to build hierarchy.</p>
+  </div>
+
+  <div *ngIf="!isLoading && hierarchy.length > 0" class="space-y-6">
+    <div *ngFor="let item of hierarchy" class="card">
+      <div class="p-4 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-red-700">{{ item.professor.username }}</h3>
+        <p class="text-sm text-gray-500">{{ item.professor.email }} | {{item.professor.specialite}}</p>
+      </div>
+
+      <div *ngIf="item.students.length > 0; else noStudents" class="p-4">
+        <h4 class="text-md font-semibold text-gray-800 mb-2">Supervised Students</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li *ngFor="let student of item.students" class="text-gray-700">
+            {{ student.username }} ({{student.email}})
+          </li>
+        </ul>
+      </div>
+      <ng-template #noStudents>
+        <div class="p-4 text-center">
+          <p class="text-sm text-gray-500 italic">This professor is not currently supervising any students on projects.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  
+  <div *ngIf="!isLoading && unassignedStudents.length > 0" class="card mt-8">
+     <div class="p-4 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800">Unassigned Students</h3>
+      </div>
+       <div class="p-4">
+        <ul class="list-disc pl-5 space-y-1">
+          <li *ngFor="let student of unassignedStudents" class="text-gray-700">
+            {{ student.username }} ({{student.email}})
+          </li>
+        </ul>
+      </div>
+  </div>
+
 </div>
