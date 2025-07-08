@@ -6,4 +6,7 @@ export interface Phase {
   dateFin?: string;
   status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
   projectId: number;
+  
+  // This property links the phase to a GitLab commit
+  commitId?: string; 
 }

@@ -1,8 +1,5 @@
 <div class="max-w-6xl mx-auto px-6 py-8" *ngIf="project">
   <div class="card">
-<<<<<<< HEAD
-    <h2 class="text-3xl font-bold text-gray-900 mb-6">{{ project.titre }}</h2>
-=======
     <div class="flex justify-between items-start mb-6">
       <div>
         <h2 class="text-3xl font-bold text-gray-900">{{ project.titre }}</h2>
@@ -14,7 +11,6 @@
       </div>
     </div>
     
->>>>>>> 9647786 (footer)
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
         <h3 class="text-xl font-semibold text-gray-900 mb-4">Project Details</h3>
@@ -45,22 +41,8 @@
         </div>
       </div>
     </div>
+
     <div class="mt-8">
-<<<<<<< HEAD
-      <h3 class="text-xl font-semibold text-gray-900 mb-4">Phases</h3>
-      <div class="space-y-2">
-        <div *ngFor="let phase of phases" class="flex justify-between items-center p-2 hover:bg-gray-50 rounded-lg transition-all duration-200">
-          <span class="text-gray-900">{{ phase.name }}</span>
-          <span class="px-2 py-0.5 text-xs font-semibold rounded-full capitalize"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': phase.status === 'COMPLETED',
-                  'bg-blue-100 text-blue-800': phase.status === 'IN_PROGRESS',
-                  'bg-red-100 text-red-800': phase.status === 'PLANNED',
-                  'bg-yellow-100 text-yellow-800': phase.status === 'ON_HOLD' || phase.status === 'CANCELLED'
-                }">
-            {{ phase.status }}
-          </span>
-=======
       <h3 class="text-xl font-semibold text-gray-900 mb-4">Phases & Feedback</h3>
       <div class="space-y-6">
         <div *ngFor="let phase of phases" class="p-4 rounded-lg border border-gray-200 bg-white">
@@ -116,7 +98,6 @@
               <p class="text-sm text-gray-500 italic">No feedback submitted for this phase yet.</p>
             </ng-template>
           </div>
->>>>>>> 9647786 (footer)
         </div>
       </div>
     </div>

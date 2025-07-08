@@ -15,6 +15,9 @@ public class PhaseDTO {
     private LocalDate dateFin;
     private PhaseStatus status;
     private Long projectId;
+    
+    // FIX: Ensure this field exists
+    private String commitId;
 
     public static PhaseDTO fromEntity(Phase phase) {
         PhaseDTO dto = new PhaseDTO();
@@ -25,6 +28,10 @@ public class PhaseDTO {
         dto.setDateFin(phase.getDateFin());
         dto.setStatus(phase.getStatus());
         dto.setProjectId(phase.getProject().getId());
+        
+        // FIX: Ensure this mapping line exists
+        dto.setCommitId(phase.getCommitId());
+        
         return dto;
     }
 
@@ -36,6 +43,10 @@ public class PhaseDTO {
         phase.setDateDebut(this.dateDebut);
         phase.setDateFin(this.dateFin);
         phase.setStatus(this.status);
+        
+        // FIX: Ensure this mapping line exists
+        phase.setCommitId(this.commitId);
+        
         return phase;
     }
 }

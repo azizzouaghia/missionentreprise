@@ -4,25 +4,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeedbackService } from '../../../services/feedback.service';
 import { ProjectService } from '../../../services/project.service';
 import { ProfessorService } from '../../../services/professor.service';
-import { PhaseService } from '../../../services/phase.service';
+import { PhaseService } from '../../../services/phase.service'; // Import PhaseService
 import { Feedback } from '../../../models/feedback';
 import { Project } from '../../../models/project';
 import { User } from '../../../models/user';
-import { Phase } from '../../../models/phase';
+import { Phase } from '../../../models/phase'; // Import Phase model
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon'; // --- IMPORT MatIconModule ---
-import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-feedback-form',
   standalone: true,
-  // --- ADD MatIconModule to imports ---
-  imports: [MatDividerModule,CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule,ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule],
   templateUrl: './feedback-form.component.html',
 })
 export class FeedbackFormComponent implements OnInit {
@@ -30,21 +27,21 @@ export class FeedbackFormComponent implements OnInit {
   feedbackId?: number;
   projects: Project[] = [];
   professors: User[] = [];
-  phases: Phase[] = [];
+  phases: Phase[] = []; // List of phases for the selected project
 
   constructor(
     private fb: FormBuilder,
     private feedbackService: FeedbackService,
     private projectService: ProjectService,
     private professorService: ProfessorService,
-    private phaseService: PhaseService,
+    private phaseService: PhaseService, // Inject PhaseService
     private route: ActivatedRoute,
     private router: Router
   ) {
     this.feedbackForm = this.fb.group({
       commentaire: ['', Validators.required],
       note: ['', [Validators.required, Validators.min(1), Validators.max(5)]],
-      phaseId: [{value: '', disabled: true}, Validators.required],
+      phaseId: ['', Validators.required], // Changed from projectId
       professorId: ['', Validators.required]
     });
   }
@@ -56,22 +53,21 @@ export class FeedbackFormComponent implements OnInit {
     this.feedbackId = this.route.snapshot.params['id'];
     if (this.feedbackId) {
       this.feedbackService.getFeedbackById(this.feedbackId).subscribe(feedback => {
-        // More complex logic needed here to pre-populate if editing
         this.feedbackForm.patchValue(feedback);
+        // If editing, you might want to pre-load the relevant phases
       });
     }
   }
 
+  // New method to handle project selection
   onProjectSelectionChange(projectId: number) {
     if (projectId) {
-      this.feedbackForm.get('phaseId')?.enable();
       this.phaseService.getPhasesByProject(projectId).subscribe(phases => {
         this.phases = phases;
-        this.feedbackForm.get('phaseId')?.setValue('');
+        this.feedbackForm.get('phaseId')?.setValue(''); // Reset phase selection
       });
     } else {
       this.phases = [];
-      this.feedbackForm.get('phaseId')?.disable();
     }
   }
 

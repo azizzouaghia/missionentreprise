@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router'; // --- IMPORT RouterLink ---
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProjectService } from '../../../services/project.service';
 import { StudentService } from '../../../services/student.service';
 import { PhaseService } from '../../../services/phase.service';
@@ -15,17 +15,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-<<<<<<< HEAD
-=======
 import { GitlabService } from '../../../services/gitlab.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { forkJoin } from 'rxjs'; 
->>>>>>> 9647786 (footer)
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  // --- ADD RouterLink to the imports array ---
   imports: [CommonModule, FormsModule, MatCardModule, MatListModule, MatButtonModule, MatSelectModule, ReactiveFormsModule, RouterLink],
   templateUrl: './project-detail.component.html',
 })
@@ -35,27 +31,20 @@ export class ProjectDetailComponent implements OnInit {
   availableStudents: User[] = [];
   phases: Phase[] = [];
   selectedStudentId: number | null = null;
-<<<<<<< HEAD
-=======
   commits: any[] = [];
   selectedCommits: { [phaseId: number]: string } = {};
 
   allFeedback: Feedback[] = [];
   totalProjectScore: number = 0;
->>>>>>> 9647786 (footer)
 
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private studentService: StudentService,
-<<<<<<< HEAD
-    private phaseService: PhaseService
-=======
     private phaseService: PhaseService,
     private gitlabService: GitlabService,
     private snackBar: MatSnackBar,
     private feedbackService: FeedbackService 
->>>>>>> 9647786 (footer)
   ) { }
 
   ngOnInit() {
@@ -63,14 +52,6 @@ export class ProjectDetailComponent implements OnInit {
     
     this.projectService.getProjectById(id).subscribe(project => {
       this.project = project;
-<<<<<<< HEAD
-      this.studentService.getAllStudents().subscribe(students => {
-        this.students = students.filter(s => project.studentIds.includes(s.id));
-        this.availableStudents = students.filter(s => !project.studentIds.includes(s.id));
-      });
-      this.phaseService.getPhasesByProject(id).subscribe(phases => this.phases = phases);
-    });
-=======
       this.loadInitialData();
 
       if (project.gitlabProjectId) {
@@ -111,7 +92,6 @@ export class ProjectDetailComponent implements OnInit {
   
   getFeedbackForPhase(phaseId: number): Feedback[] {
     return this.allFeedback.filter(f => f.phaseId === phaseId);
->>>>>>> 9647786 (footer)
   }
 
   assignStudent() {
@@ -132,8 +112,6 @@ export class ProjectDetailComponent implements OnInit {
       });
     }
   }
-<<<<<<< HEAD
-=======
 
   linkCommit(phaseId: number) {
     const commitId = this.selectedCommits[phaseId];
@@ -144,17 +122,26 @@ export class ProjectDetailComponent implements OnInit {
 
     this.phaseService.linkCommitToPhase(phaseId, commitId).subscribe({
       next: updatedPhase => {
+        // --- FIX: Use this more robust method to update the array ---
+        // This ensures Angular's change detection is triggered correctly.
+        
+        // Add this line for debugging. Check your browser's console (F12).
+        console.log('Received updated phase from backend:', updatedPhase);
+
         const index = this.phases.findIndex(p => p.id === phaseId);
         if (index !== -1) {
-          this.phases[index] = updatedPhase;
+          // Create a new array to guarantee the view updates
+          const newPhases = [...this.phases];
+          newPhases[index] = updatedPhase;
+          this.phases = newPhases;
         }
         this.snackBar.open('Commit linked successfully!', 'Close', { duration: 3000 });
       },
       error: err => {
         console.error('Failed to link commit', err);
-        this.snackBar.open('Error linking commit.', 'Close', { duration: 3000 });
+        // Also log the actual error for more insight
+        this.snackBar.open(`Error linking commit: ${err.message}`, 'Close', { duration: 3000 });
       }
     });
   }
->>>>>>> 9647786 (footer)
 }

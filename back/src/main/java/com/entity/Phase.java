@@ -33,6 +33,9 @@ public class Phase {
     @Enumerated(EnumType.STRING)
     private PhaseStatus status;
 
+    private String commitId; // To store the linked GitLab commit SHA
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore

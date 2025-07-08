@@ -34,4 +34,8 @@ export class PhaseService {
   deletePhase(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  linkCommitToPhase(phaseId: number, commitId: string): Observable<Phase> {
+    return this.http.put<Phase>(`${this.apiUrl}/${phaseId}/link-commit`, { commitId });
+  }
 }

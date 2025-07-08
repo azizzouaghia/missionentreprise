@@ -75,4 +75,16 @@ public class PhaseService {
                 .orElseThrow(() -> new RuntimeException("Phase not found with id: " + id));
         phaseRepository.delete(phase);
     }
-}
+    
+    // --- ADDED METHOD ---
+    @Transactional
+    public PhaseDTO linkCommitToPhase(Long phaseId, String commitId) {
+        Phase phase = phaseRepository.findById(phaseId)
+                .orElseThrow(() -> new RuntimeException("Phase not found with id: " + phaseId));
+        
+        phase.setCommitId(commitId);
+        
+        Phase updatedPhase = phaseRepository.save(phase);
+        return PhaseDTO.fromEntity(updatedPhase);
+    }
+}   

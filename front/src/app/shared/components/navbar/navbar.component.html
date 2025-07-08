@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-<nav class="bg-gradient-to-b from-gray-50 to-white shadow-md">
-  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-    <span class="text-2xl font-bold text-gray-900">Git Project</span>
-    <div class="flex gap-4 items-center">
-      <ng-container *ngIf="isAuthenticated">
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'PROF' || userRole === 'ETUDIANT'" routerLink="/stats" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/stats', true)}">Stats</a>
-        <a *ngIf="userRole === 'ADMIN'" routerLink="/users" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/users', true)}">Users</a>
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'PROF' || userRole === 'ETUDIANT'" routerLink="/projects" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/projects', true)}">Projects</a>
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'PROF' || userRole === 'ETUDIANT'" routerLink="/feedback" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/feedback', true)}">Feedback</a>
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'PROF'" routerLink="/phases" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/phases', true)}">Phases</a>
-        <a *ngIf="userRole === 'ADMIN' " routerLink="/professors" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/professors', true)}">Professors</a>
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'ETUDIANT'" routerLink="/students" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/students', true)}">Students</a>
-        <a *ngIf="userRole === 'ADMIN' || userRole === 'PROF' || userRole === 'ETUDIANT'" routerLink="/gitlab/projects" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/gitlab/projects', true)}">GitLab</a>
-        <a routerLink="/auth/profile" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/auth/profile', true)}">Profile</a>
-        <button (click)="logout()" class="text-red-600 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200">Logout</button>
-      </ng-container>
-      <ng-container *ngIf="!isAuthenticated">
-        <a routerLink="/auth/login" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/auth/login', true)}">Login</a>
-        <a routerLink="/auth/register" class="text-gray-700 hover:text-red-700 hover:bg-red-500/10 px-3 py-2 rounded-lg transition-all duration-200" [ngClass]="{'border-b-2 border-red-600': router.isActive('/auth/register', true)}">Register</a>
-      </ng-container>
-=======
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center h-16">
@@ -77,7 +55,6 @@
         </ng-container>
       </div>
 
->>>>>>> 9647786 (footer)
     </div>
   </div>
 </nav>

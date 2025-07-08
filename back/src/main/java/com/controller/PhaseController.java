@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dto.CommitLinkRequest; // --- ADDED IMPORT ---
 import com.dto.PhaseDTO;
 import com.service.PhaseService;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +51,12 @@ public class PhaseController {
     public ResponseEntity<Void> deletePhase(@PathVariable Long id) {
         phaseService.deletePhase(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    // --- ADDED ENDPOINT ---
+    @PutMapping("/{id}/link-commit")
+    public ResponseEntity<PhaseDTO> linkCommitToPhase(@PathVariable Long id, @RequestBody CommitLinkRequest request) {
+        PhaseDTO updatedPhase = phaseService.linkCommitToPhase(id, request.getCommitId());
+        return ResponseEntity.ok(updatedPhase);
     }
 }
